@@ -1,0 +1,10 @@
+{
+  "sketch": "epidemic",
+  "color": "#E0457B",
+  "cat": "dynamique",
+  "level": 2,
+  "formula": "R₀ = β ⁄ γ",
+  "date": "2026-05-26",
+  "fr": { "title": "Propagation d’une épidémie", "desc": "Le modèle SIR en agents : joue sur la contagiosité, la guérison et la vaccination." },
+  "en": { "title": "Spread of an Epidemic", "desc": "The SIR model with agents: play with contagiousness, recovery and vaccination." }
+}

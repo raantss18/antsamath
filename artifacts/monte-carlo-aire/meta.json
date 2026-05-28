@@ -1,0 +1,10 @@
+{
+  "sketch": "approx",
+  "color": "#FF9F1C",
+  "cat": "probas",
+  "level": 2,
+  "formula": "A ≈ 4·k⁄n",
+  "date": "2026-05-28",
+  "fr": { "title": "Monte Carlo : les aires", "desc": "Estime l’aire d’une forme en lançant des milliers de points au hasard." },
+  "en": { "title": "Monte Carlo: Areas", "desc": "Estimate a shape’s area by throwing thousands of random points." }
+}

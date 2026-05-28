@@ -1,201 +1,150 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" data-theme="light">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>antsamath — le laboratoire des maths</title>
+<title>antsamath — jouer avec les maths</title>
+<script>document.documentElement.dataset.theme=localStorage.getItem("antsamath-theme")||"light";document.documentElement.lang=localStorage.getItem("antsamath-lang")||"fr";</script>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Lexend:wght@300;400;500&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Lexend:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/theme-a.css" />
 <style>
-  :root {
-    --bg: #0B0B11;
-    --bg-2: #13131C;
-    --panel: #14141E;
-    --ink: #ECECF4;
-    --ink-soft: #9A9AB0;
-    --line: #26263A;
-    --accent: #18C2E8;
-    --display: "Space Grotesk", system-ui, sans-serif;
-    --body: "Lexend", system-ui, sans-serif;
-    --mono: "JetBrains Mono", ui-monospace, monospace;
-  }
-  * { box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
-  body {
-    margin: 0; font-family: var(--body); color: var(--ink);
-    background: var(--bg);
-    background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,.045) 1px, transparent 0);
-    background-size: 26px 26px;
-    -webkit-font-smoothing: antialiased; overflow-x: hidden;
-  }
-  a { color: inherit; text-decoration: none; }
-
-  /* ---------- NAV ---------- */
-  .nav {
-    position: sticky; top: 0; z-index: 50;
-    display: flex; align-items: center; gap: 18px;
-    padding: 15px clamp(18px, 5vw, 64px);
-    background: color-mix(in srgb, var(--bg) 78%, transparent);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid transparent; transition: border-color .3s;
-  }
-  .nav.scrolled { border-bottom-color: var(--line); }
-  .brand { display: flex; align-items: center; gap: 11px; font-family: var(--mono); font-weight: 700; font-size: 18px; letter-spacing: -.01em; }
-  .brand-mark { width: 28px; height: 28px; position: relative; flex: none; }
-  .brand-mark .orbit { position: absolute; inset: 0; border: 1.5px solid var(--ink); border-radius: 50%; }
-  .brand-mark .sun { position: absolute; top: 50%; left: 50%; width: 8px; height: 8px; margin: -4px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 10px var(--accent); }
-  .brand-mark .moon { position: absolute; top: 50%; left: 50%; width: 5px; height: 5px; margin: -2.5px; border-radius: 50%; background: #FF5DA2; transform-origin: -7px center; animation: orbit 4.5s linear infinite; }
-  @keyframes orbit { to { transform: rotate(360deg); } }
-  .brand b { color: var(--accent); }
-  .nav-spacer { flex: 1; }
-  .nav-links { display: flex; align-items: center; gap: 4px; }
-  .nav-links a { font-family: var(--mono); font-size: 13px; color: var(--ink-soft); padding: 8px 12px; border-radius: 8px; transition: color .2s, background .2s; }
-  .nav-links a:hover { color: var(--ink); background: var(--bg-2); }
-  .langbtn { font-family: var(--mono); font-size: 12.5px; font-weight: 700; border: 1px solid var(--line); background: transparent; color: var(--ink); padding: 7px 11px; border-radius: 7px; cursor: pointer; transition: all .2s; }
-  .langbtn:hover { border-color: var(--accent); color: var(--accent); box-shadow: 0 0 14px -4px var(--accent); }
-  .gh { display: inline-grid; place-items: center; width: 36px; height: 36px; border-radius: 8px; border: 1px solid var(--line); transition: all .2s; }
-  .gh:hover { border-color: var(--accent); color: var(--accent); }
-  .gh svg { width: 17px; height: 17px; }
-
   /* ---------- HERO ---------- */
-  .hero { position: relative; padding: clamp(60px, 10vw, 130px) clamp(18px, 5vw, 64px) clamp(48px, 7vw, 90px); overflow: hidden; }
-  #hero-canvas { position: absolute; inset: 0; width: 100%; height: 100%; opacity: .7; pointer-events: none; z-index: 0; }
-  .hero::after { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: radial-gradient(120% 90% at 30% 20%, transparent 30%, var(--bg) 92%); }
-  .hero-inner { position: relative; z-index: 2; max-width: 1000px; }
-  .kicker { display: inline-flex; align-items: center; gap: 9px; font-family: var(--mono); font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); border: 1px solid color-mix(in srgb, var(--accent) 40%, var(--line)); padding: 7px 14px; border-radius: 6px; margin-bottom: 28px; background: color-mix(in srgb, var(--accent) 8%, transparent); white-space: nowrap; }
-  .kicker .pulse { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 9px var(--accent); animation: pulse 1.6s ease-in-out infinite; }
-  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .3; } }
-  .hero h1 { font-family: var(--display); font-weight: 700; letter-spacing: -.03em; line-height: .96; font-size: clamp(44px, 8.5vw, 100px); margin: 0 0 26px; text-wrap: balance; }
-  .hero h1 .hl { color: transparent; background: linear-gradient(100deg, #18C2E8, #7C5CFF 45%, #FF5DA2); -webkit-background-clip: text; background-clip: text; }
-  .hero p.lede { font-size: clamp(17px, 2.2vw, 22px); line-height: 1.55; color: var(--ink-soft); max-width: 640px; margin: 0 0 38px; font-weight: 300; }
+  .hero { position: relative; padding: clamp(54px, 9vw, 116px) clamp(16px, 5vw, 64px) clamp(36px, 6vw, 72px); overflow: hidden; }
+  #hero-canvas { position: absolute; inset: -10% -5% auto -5%; width: 110%; height: 130%; opacity: .55; pointer-events: none; z-index: 0; }
+  .hero-blob { position: absolute; border-radius: 50%; filter: blur(50px); opacity: .35; z-index: 0; pointer-events: none; }
+  .hero-inner { position: relative; z-index: 2; max-width: 980px; }
+  .kicker { display: inline-flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 12.5px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, var(--bg)); padding: 7px 14px; border-radius: 999px; margin-bottom: 26px; }
+  .kicker .pulse { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); animation: pulse 1.6s ease-in-out infinite; }
+  @keyframes pulse { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: .4; transform: scale(.7); } }
+  .hero h1 { font-family: var(--display); font-weight: 800; letter-spacing: -.03em; line-height: .98; font-size: clamp(40px, 8vw, 90px); margin: 0 0 24px; text-wrap: balance; }
+  .hero h1 .hl { position: relative; white-space: nowrap; }
+  .hero h1 .hl::after { content: ""; position: absolute; left: -2px; right: -2px; bottom: .08em; height: .34em; background: color-mix(in srgb, var(--accent) 38%, transparent); border-radius: 4px; z-index: -1; transform: rotate(-1deg); }
+  .hero p.lede { font-size: clamp(17px, 2.2vw, 22px); line-height: 1.5; color: var(--ink-soft); max-width: 620px; margin: 0 0 34px; font-weight: 300; }
   .cta-row { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
-  .btn { display: inline-flex; align-items: center; gap: 10px; font-family: var(--mono); font-weight: 700; font-size: 14.5px; padding: 15px 24px; border-radius: 9px; cursor: pointer; border: 0; transition: transform .15s, box-shadow .25s, background .2s; }
-  .btn-primary { background: var(--accent); color: #04141a; box-shadow: 0 0 0 0 var(--accent); }
-  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 26px -4px var(--accent); }
-  .btn-ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); }
-  .btn-ghost:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
 
   /* ---------- MISSION STRIP ---------- */
-  .mission { padding: 6px clamp(18px, 5vw, 64px); }
-  .mission-inner { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 28px 0; display: flex; flex-wrap: wrap; gap: 14px 40px; align-items: baseline; justify-content: space-between; }
-  .mission-inner .big { font-family: var(--display); font-weight: 500; font-size: clamp(18px, 2.4vw, 25px); letter-spacing: -.01em; max-width: 760px; line-height: 1.3; }
-  .mission-inner .big em { font-style: normal; color: var(--accent); }
+  .mission { padding: 8px clamp(16px, 5vw, 64px) 6px; }
+  .mission-inner { border-top: 1px dashed var(--line); border-bottom: 1px dashed var(--line); padding: 26px 0; display: flex; flex-wrap: wrap; gap: 14px 40px; align-items: baseline; justify-content: space-between; }
+  .mission-inner .big { font-family: var(--display); font-weight: 700; font-size: clamp(18px, 2.4vw, 24px); letter-spacing: -.01em; max-width: 720px; line-height: 1.3; }
   .mission-inner .tag { font-family: var(--mono); font-size: 12px; color: var(--ink-soft); }
 
-  /* ---------- GALLERY ---------- */
-  .gallery-wrap { padding: clamp(48px, 7vw, 90px) clamp(18px, 5vw, 64px) 40px; }
-  .gh-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 18px; margin-bottom: 26px; }
-  .gh-head h2 { font-family: var(--display); font-weight: 700; font-size: clamp(28px, 4.4vw, 46px); letter-spacing: -.02em; margin: 0; }
-  .gh-head .sub { color: var(--ink-soft); font-size: 14.5px; font-family: var(--mono); }
-  .filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 30px; }
-  .chip { font-family: var(--mono); font-size: 12.5px; font-weight: 600; padding: 9px 15px; border-radius: 7px; cursor: pointer; border: 1px solid var(--line); background: var(--panel); color: var(--ink-soft); transition: all .18s; }
-  .chip:hover { border-color: color-mix(in srgb, var(--accent) 60%, var(--line)); color: var(--ink); }
-  .chip.active { background: var(--accent); color: #04141a; border-color: var(--accent); }
+  /* ---------- SECTIONS ---------- */
+  main { padding: clamp(40px, 6vw, 72px) clamp(16px, 5vw, 64px) 20px; }
+  .section { margin-bottom: clamp(44px, 6vw, 72px); }
+  .sec-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 14px; margin-bottom: 22px; }
+  .sec-head h2 { font-family: var(--display); font-weight: 800; font-size: clamp(24px, 3.6vw, 38px); letter-spacing: -.02em; margin: 0; display: flex; align-items: center; gap: 12px; }
+  .sec-head h2 .ic { font-size: .8em; }
+  .sec-head .sub { color: var(--ink-soft); font-size: 14.5px; font-family: var(--mono); }
+  #filters { margin-bottom: 28px; }
+  .hint { font-family: var(--mono); font-size: 14px; color: var(--ink-soft); border: 1px dashed var(--line); border-radius: var(--r); padding: 28px; text-align: center; }
 
-  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 16px; }
-  .card {
-    display: flex; flex-direction: column; background: var(--panel);
-    border: 1px solid var(--line); border-radius: 14px; overflow: hidden;
-    position: relative; transition: transform .2s, box-shadow .25s, border-color .25s;
-  }
-  .card.is-hidden { display: none; }
-  .card::before { content: ""; position: absolute; inset: 0; border-radius: 14px; padding: 1px; background: linear-gradient(160deg, color-mix(in srgb, var(--c) 60%, transparent), transparent 55%); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; opacity: 0; transition: opacity .25s; pointer-events: none; }
-  .card:hover { transform: translateY(-5px); border-color: color-mix(in srgb, var(--c) 45%, var(--line)); box-shadow: 0 20px 44px -22px color-mix(in srgb, var(--c) 90%, transparent); }
-  .card:hover::before { opacity: 1; }
-  .thumb { position: relative; aspect-ratio: 16 / 9; background: radial-gradient(130% 130% at 50% 0%, color-mix(in srgb, var(--c) 14%, #0a0a12) 0%, #0a0a12 72%); border-bottom: 1px solid var(--line); }
-  .thumb canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
-  .thumb .num { position: absolute; top: 10px; right: 12px; font-family: var(--mono); font-size: 11px; font-weight: 700; color: var(--c); opacity: .85; }
-  .cbody { padding: 16px 18px 18px; display: flex; flex-direction: column; flex: 1; }
-  .ctop { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
-  .formula { font-family: var(--mono); font-size: 11.5px; font-weight: 700; color: var(--c); border: 1px solid color-mix(in srgb, var(--c) 35%, var(--line)); padding: 3px 8px; border-radius: 6px; white-space: nowrap; }
-  .level { font-size: 10px; letter-spacing: 1px; color: var(--c); }
-  .ctitle { font-family: var(--display); font-weight: 600; font-size: 19px; letter-spacing: -.01em; margin: 0 0 7px; }
-  .cdesc { font-size: 13.5px; line-height: 1.5; color: var(--ink-soft); margin: 0 0 16px; font-weight: 300; flex: 1; }
-  .copen { display: inline-flex; align-items: center; gap: 7px; font-family: var(--mono); font-size: 12px; font-weight: 700; color: var(--ink); }
-  .copen-arr { transition: transform .2s; color: var(--c); }
-  .card:hover .copen-arr { transform: translateX(5px); }
-
-  /* ---------- FOOTER ---------- */
-  footer { padding: 48px clamp(18px, 5vw, 64px) 56px; border-top: 1px solid var(--line); margin-top: 28px; }
-  .foot-inner { display: flex; flex-wrap: wrap; gap: 20px; align-items: center; justify-content: space-between; }
-  .foot-inner .fnote { font-family: var(--mono); font-size: 12.5px; color: var(--ink-soft); }
-  .foot-inner .fnote b { color: var(--accent); }
-  .swatches { display: flex; gap: 6px; }
-  .swatches i { width: 13px; height: 13px; border-radius: 3px; display: block; box-shadow: 0 0 8px -1px currentColor; }
-
-  /* ---------- TOAST ---------- */
-  .toast { position: fixed; left: 50%; bottom: 28px; transform: translate(-50%, 20px); background: var(--panel); border: 1px solid var(--accent); color: var(--ink); font-family: var(--mono); font-size: 12.5px; font-weight: 700; padding: 13px 20px; border-radius: 9px; z-index: 100; opacity: 0; pointer-events: none; transition: opacity .25s, transform .25s; box-shadow: 0 0 30px -8px var(--accent); }
-  .toast.show { opacity: 1; transform: translate(-50%, 0); }
-
-  @media (max-width: 640px) { .nav-links a:not(.gh) { display: none; } }
+  /* ---------- ÉTAT VIDE ---------- */
+  .empty { max-width: 720px; margin: clamp(30px, 6vw, 70px) auto; padding: clamp(28px, 5vw, 48px); border: 1px dashed var(--line); border-radius: 26px; background: var(--card); }
+  .empty h2 { font-family: var(--display); font-weight: 800; font-size: clamp(24px, 4vw, 34px); margin: 0 0 14px; letter-spacing: -.02em; }
+  .empty p { color: var(--ink-soft); font-size: 15.5px; line-height: 1.6; margin: 0 0 20px; }
+  .empty pre { font-family: var(--mono); font-size: 13px; background: var(--bg-2); border: 1px solid var(--line); border-radius: 14px; padding: 18px 20px; overflow-x: auto; line-height: 1.7; color: var(--ink); }
+  .empty .accentword { color: var(--accent); }
 </style>
 </head>
 <body>
   <nav class="nav" id="nav">
-    <a href="#" class="brand">
+    <a href="index.html" class="brand">
       <span class="brand-mark"><span class="orbit"></span><span class="sun"></span><span class="moon"></span></span>
       antsa<b>math</b>
     </a>
     <span class="nav-spacer"></span>
     <div class="nav-links">
-      <a href="#galerie" data-fr="Galerie" data-en="Gallery">Galerie</a>
-      <a href="#mission" data-fr="Projet" data-en="Project">Projet</a>
+      <a class="txtlink" href="#top" data-fr="Top" data-en="Top">Top</a>
+      <a class="txtlink" href="#nouveau" data-fr="Nouveau" data-en="New">Nouveau</a>
+      <a class="txtlink" href="#tous" data-fr="Toutes" data-en="All">Toutes</a>
+      <a class="txtlink" href="contact.html" data-fr="Contact" data-en="Contact">Contact</a>
       <a class="gh" href="https://github.com" target="_blank" rel="noopener" aria-label="GitHub">
         <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
       </a>
+      <button class="themebtn" type="button" aria-label="Mode sombre"></button>
       <button class="langbtn" type="button">EN</button>
     </div>
   </nav>
 
   <header class="hero">
     <canvas id="hero-canvas"></canvas>
+    <div class="hero-blob" style="width:340px;height:340px;background:#FF9F1C;top:-60px;right:8%;"></div>
+    <div class="hero-blob" style="width:300px;height:300px;background:#2E8BFF;bottom:-120px;left:-40px;"></div>
     <div class="hero-inner">
-      <span class="kicker"><span class="pulse"></span><span data-fr="Le laboratoire des maths" data-en="The maths laboratory">Le laboratoire des maths</span></span>
-      <h1 data-html="1" data-fr="Là où les maths &lt;span class='hl'&gt;s’animent&lt;/span&gt;." data-en="Where maths &lt;span class='hl'&gt;come alive&lt;/span&gt;.">Là où les maths <span class="hl">s’animent</span>.</h1>
-      <p class="lede" data-fr="Une collection de simulations interactives — fractales, chaos, probabilités, nombres premiers — à explorer, déformer et faire tourner. Chaque module est un petit terrain d’expérience." data-en="A collection of interactive simulations — fractals, chaos, probability, prime numbers — to explore, bend and run. Each module is a small experiment to play with.">Une collection de simulations interactives — fractales, chaos, probabilités, nombres premiers — à explorer, déformer et faire tourner. Chaque module est un petit terrain d’expérience.</p>
+      <span class="kicker"><span class="pulse"></span><span data-fr="Maths interactives · open source" data-en="Interactive maths · open source">Maths interactives · open source</span></span>
+      <h1 data-html="1" data-fr="Les maths, ça se &lt;span class='hl'&gt;manipule&lt;/span&gt;." data-en="Maths you can &lt;span class='hl'&gt;play with&lt;/span&gt;.">Les maths, ça se <span class="hl">manipule</span>.</h1>
+      <p class="lede" data-fr="antsamath rassemble des petites simulations interactives — Monte Carlo, chaos, épidémies — pour voir les idées mathématiques prendre vie sous vos doigts." data-en="antsamath gathers tiny interactive simulations — Monte Carlo, chaos, epidemics — so you can watch mathematical ideas come alive under your fingers.">antsamath rassemble des petites simulations interactives — Monte Carlo, chaos, épidémies — pour voir les idées mathématiques prendre vie sous vos doigts.</p>
       <div class="cta-row">
-        <a href="#galerie" class="btn btn-primary"><span data-fr="Entrer dans le labo" data-en="Enter the lab">Entrer dans le labo</span> →</a>
-        <a href="#mission" class="btn btn-ghost" data-fr="// le projet" data-en="// the project">// le projet</a>
+        <a href="#tous" class="btn btn-primary"><span data-fr="Explorer les simulations" data-en="Explore the simulations">Explorer les simulations</span> →</a>
+        <a href="contact.html" class="btn btn-ghost" data-fr="Nous contacter" data-en="Contact us">Nous contacter</a>
       </div>
     </div>
   </header>
 
-  <section class="mission" id="mission">
+  <section class="mission">
     <div class="mission-inner">
-      <div class="big" data-html="1" data-fr="On ne lit pas une formule : on la &lt;em&gt;fait tourner&lt;/em&gt;. Curseurs, hasard, zoom — et la structure mathématique se révèle d’elle-même." data-en="You don’t read a formula — you &lt;em&gt;run&lt;/em&gt; it. Sliders, randomness, zoom — and the mathematical structure reveals itself.">On ne lit pas une formule : on la <em>fait tourner</em>. Curseurs, hasard, zoom — et la structure mathématique se révèle d’elle-même.</div>
-      <div class="tag" data-fr="// open source · pour tous" data-en="// open source · for everyone">// open source · pour tous</div>
+      <div class="big" data-fr="Pas de cours magistral. On bouge un curseur, on relance le hasard, on zoome — et la règle mathématique apparaît toute seule." data-en="No lecture. Move a slider, reroll the randomness, zoom in — and the maths rule reveals itself.">Pas de cours magistral. On bouge un curseur, on relance le hasard, on zoome — et la règle mathématique apparaît toute seule.</div>
+      <div class="tag" data-fr="// fait pour la curiosité, de 7 à 77 ans" data-en="// built for the curious, ages 7 to 77">// fait pour la curiosité, de 7 à 77 ans</div>
     </div>
   </section>
 
-  <main class="gallery-wrap" id="galerie">
-    <div class="gh-head">
-      <div>
-        <h2 data-fr="Modules" data-en="Modules">Modules</h2>
-        <div class="sub" data-fr="// 12 simulations · choisis un domaine" data-en="// 12 simulations · pick a field">// 12 simulations · choisis un domaine</div>
-      </div>
+  <main>
+    <!-- ÉTAT VIDE -->
+    <div class="empty" id="empty" style="display:none">
+      <h2 data-fr="Aucune simulation… pour l’instant." data-en="No simulation… yet.">Aucune simulation… pour l’instant.</h2>
+      <p data-html="1" data-fr="Pour en ajouter une, dépose un dossier dans &lt;span class='accentword'&gt;artifacts/&lt;/span&gt; avec un fichier &lt;span class='accentword'&gt;meta.json&lt;/span&gt;. Le site le détecte tout seul." data-en="To add one, drop a folder in &lt;span class='accentword'&gt;artifacts/&lt;/span&gt; with a &lt;span class='accentword'&gt;meta.json&lt;/span&gt; file. The site detects it automatically.">Pour en ajouter une, dépose un dossier dans <span class="accentword">artifacts/</span> avec un fichier <span class="accentword">meta.json</span>. Le site le détecte tout seul.</p>
+      <pre>artifacts/
+└─ ma-simulation/
+   ├─ index.html
+   └─ meta.json</pre>
     </div>
-    <div class="filters" id="filters"></div>
-    <div class="grid" id="gallery"></div>
+
+    <!-- SECTIONS DYNAMIQUES -->
+    <div id="sections" style="display:none">
+      <section class="section" id="top">
+        <div class="sec-head">
+          <h2><span class="ic">🔥</span><span data-fr="Top simulations" data-en="Top simulations">Top simulations</span></h2>
+          <span class="sub" data-fr="// les plus explorées" data-en="// most explored">// les plus explorées</span>
+        </div>
+        <div class="grid" id="grid-top"></div>
+        <div class="hint" id="top-hint" data-fr="Explore quelques simulations : les plus visitées apparaîtront ici." data-en="Explore a few simulations: the most visited ones will show up here.">Explore quelques simulations : les plus visitées apparaîtront ici.</div>
+      </section>
+
+      <section class="section" id="nouveau">
+        <div class="sec-head">
+          <h2><span class="ic">✦</span><span data-fr="Nouveau" data-en="New">Nouveau</span></h2>
+          <span class="sub" data-fr="// les dernières arrivées" data-en="// freshly added">// les dernières arrivées</span>
+        </div>
+        <div class="grid" id="grid-new"></div>
+      </section>
+
+      <section class="section" id="tous">
+        <div class="sec-head">
+          <h2><span data-fr="Toutes les simulations" data-en="All simulations">Toutes les simulations</span> <span class="sub" id="count-all" style="font-size:.6em"></span></h2>
+          <span class="sub" data-fr="// filtre par domaine" data-en="// filter by field">// filtre par domaine</span>
+        </div>
+        <div class="filters" id="filters"></div>
+        <div class="grid" id="grid-all"></div>
+      </section>
+    </div>
   </main>
 
   <footer>
     <div class="foot-inner">
-      <div class="fnote"><b>antsamath</b> · <span data-fr="open source · sur GitHub Pages" data-en="open source · on GitHub Pages">open source · sur GitHub Pages</span></div>
-      <div class="swatches" aria-hidden="true">
-        <i style="background:#18C2E8;color:#18C2E8"></i><i style="background:#7C5CFF;color:#7C5CFF"></i><i style="background:#FF5DA2;color:#FF5DA2"></i><i style="background:#F4C20D;color:#F4C20D"></i><i style="background:#1FB36B;color:#1FB36B"></i><i style="background:#FF5247;color:#FF5247"></i>
+      <div class="fnote"><b>antsamath</b> · <span data-fr="conçu avec curiosité · hébergé sur GitHub Pages" data-en="made with curiosity · hosted on GitHub Pages">conçu avec curiosité · hébergé sur GitHub Pages</span></div>
+      <div class="foot-links">
+        <a href="contact.html" data-fr="Contact" data-en="Contact">Contact</a>
+        <a href="https://www.facebook.com/Mathmantique" target="_blank" rel="noopener">Facebook</a>
+        <a href="mailto:antsamath.cdf@gmail.com">Email</a>
       </div>
     </div>
   </footer>
 
+  <script src="assets/config.js"></script>
   <script src="assets/sketches.js"></script>
-  <script src="assets/modules.js"></script>
-  <script src="assets/app.js"></script>
-  <script>
-    initPage({ sketch: "heroField", colors: ["#18C2E8", "#7C5CFF", "#FF5DA2", "#F4C20D", "#1FB36B", "#FF5247"], fps: 60 });
-    const nav = document.getElementById("nav");
-    const onScroll = () => nav.classList.toggle("scrolled", window.scrollY > 8);
-    window.addEventListener("scroll", onScroll, { passive: true }); onScroll();
-  </script>
+  <script src="assets/common.js"></script>
+  <script src="assets/home.js"></script>
 </body>
 </html>

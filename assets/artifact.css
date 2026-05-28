@@ -1,0 +1,99 @@
+/* antsamath — cadre partagé des artefacts (page de simulation)
+   S'appuie sur les tokens de theme-a.css. */
+
+.art-nav {
+  position: sticky; top: 0; z-index: 50;
+  display: flex; align-items: center; gap: 16px;
+  padding: 12px clamp(14px, 4vw, 40px);
+  background: color-mix(in srgb, var(--bg) 85%, transparent);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--line);
+}
+.back {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--mono); font-size: 13px; font-weight: 700;
+  padding: 9px 15px; border-radius: 999px; border: 1.5px solid var(--line);
+  transition: all .18s; white-space: nowrap;
+}
+.back:hover { border-color: var(--accent); color: var(--accent); transform: translateX(-3px); }
+.art-head { flex: 1; min-width: 0; }
+.art-head .tag { font-family: var(--mono); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--accent); }
+.art-head h1 { font-family: var(--display); font-weight: 800; letter-spacing: -.02em; font-size: clamp(18px, 3vw, 26px); margin: 1px 0 0; line-height: 1.05; }
+.art-tools { display: flex; gap: 8px; align-items: center; }
+
+.art-main {
+  display: grid; grid-template-columns: 1.35fr minmax(330px, 380px); gap: 22px;
+  padding: clamp(18px, 3vw, 32px) clamp(14px, 4vw, 40px) 60px;
+  align-items: start; max-width: 1320px; margin: 0 auto;
+}
+@media (max-width: 900px) { .art-main { grid-template-columns: 1fr; } }
+
+/* ----- SCÈNE ----- */
+.stage-wrap { position: sticky; top: 74px; }
+@media (max-width: 900px) { .stage-wrap { position: static; } }
+.stage {
+  position: relative; aspect-ratio: 4 / 3; max-height: 76vh;
+  background: var(--card); border: 1px solid var(--line); border-radius: 18px; overflow: hidden;
+  box-shadow: 0 20px 50px -30px var(--shadow);
+}
+.stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.readouts {
+  position: absolute; top: 12px; left: 12px; display: flex; flex-wrap: wrap; gap: 6px; max-width: calc(100% - 24px);
+}
+.readouts .pill {
+  font-family: var(--mono); font-size: 12px; font-weight: 700;
+  background: color-mix(in srgb, var(--bg) 78%, transparent); backdrop-filter: blur(6px);
+  border: 1px solid var(--line); padding: 5px 10px; border-radius: 999px;
+}
+.readouts .pill b { color: var(--accent); }
+.legend { position: absolute; bottom: 12px; left: 12px; display: flex; flex-wrap: wrap; gap: 12px; font-family: var(--mono); font-size: 11.5px; }
+.legend span { display: inline-flex; align-items: center; gap: 6px; background: color-mix(in srgb, var(--bg) 70%, transparent); padding: 4px 9px; border-radius: 999px; backdrop-filter: blur(6px); }
+.legend i { width: 10px; height: 10px; border-radius: 50%; display: block; }
+
+/* ----- PANNEAU ----- */
+.panel { display: flex; flex-direction: column; gap: 16px; }
+.block { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 18px 18px 20px; }
+.block > h3 { font-family: var(--display); font-weight: 700; font-size: 16px; margin: 0 0 14px; display: flex; align-items: center; gap: 9px; letter-spacing: -.01em; }
+.block > h3 .ic { width: 22px; height: 22px; border-radius: 7px; background: color-mix(in srgb, var(--accent) 16%, var(--card)); color: var(--accent); display: inline-grid; place-items: center; font-size: 13px; }
+
+/* contrôles */
+.ctrl { margin-bottom: 16px; }
+.ctrl:last-child { margin-bottom: 0; }
+.ctrl label { display: flex; justify-content: space-between; align-items: baseline; font-size: 13.5px; font-weight: 500; margin-bottom: 8px; gap: 10px; }
+.ctrl label .val { font-family: var(--mono); font-weight: 700; color: var(--accent); font-size: 13px; }
+input[type="range"] { -webkit-appearance: none; appearance: none; width: 100%; height: 6px; border-radius: 999px; background: var(--line); outline: none; cursor: pointer; }
+input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%; background: var(--accent); border: 3px solid var(--card); box-shadow: 0 1px 5px var(--shadow); cursor: pointer; }
+input[type="range"]::-moz-range-thumb { width: 16px; height: 16px; border-radius: 50%; background: var(--accent); border: 3px solid var(--card); cursor: pointer; }
+
+.seg { display: flex; flex-wrap: wrap; gap: 6px; }
+.seg button { font-family: var(--mono); font-size: 12.5px; font-weight: 700; padding: 8px 12px; border-radius: 9px; border: 1.5px solid var(--line); background: transparent; color: var(--ink-soft); cursor: pointer; transition: all .16s; }
+.seg button:hover { border-color: var(--ink); color: var(--ink); }
+.seg button.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+.btnrow { display: flex; flex-wrap: wrap; gap: 8px; }
+.mini { font-family: var(--mono); font-size: 13px; font-weight: 700; padding: 10px 16px; border-radius: 10px; border: 0; cursor: pointer; transition: transform .14s, box-shadow .2s, background .2s; }
+.mini.primary { background: var(--accent); color: #fff; box-shadow: 0 4px 0 0 color-mix(in srgb, var(--accent) 55%, #000); }
+.mini.primary:hover { transform: translateY(-1px); }
+.mini.primary:active { transform: translateY(3px); box-shadow: 0 1px 0 0 color-mix(in srgb, var(--accent) 55%, #000); }
+.mini.ghost { background: transparent; border: 1.5px solid var(--line); color: var(--ink); }
+.mini.ghost:hover { border-color: var(--ink); }
+.toggle-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; font-size: 13.5px; }
+.switch { position: relative; width: 42px; height: 24px; flex: none; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.switch .track { position: absolute; inset: 0; background: var(--line); border-radius: 999px; transition: .2s; }
+.switch .track::before { content: ""; position: absolute; width: 18px; height: 18px; left: 3px; top: 3px; background: #fff; border-radius: 50%; transition: .2s; box-shadow: 0 1px 3px rgba(0,0,0,.3); }
+.switch input:checked + .track { background: var(--accent); }
+.switch input:checked + .track::before { transform: translateX(18px); }
+
+/* pédagogie */
+.lesson p { font-size: 14px; line-height: 1.62; color: var(--ink-soft); margin: 0 0 12px; }
+.lesson p:last-child { margin-bottom: 0; }
+.lesson strong { color: var(--ink); font-weight: 600; }
+.fbox { font-family: var(--mono); font-size: 14px; background: var(--bg-2); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; margin: 12px 0; text-align: center; color: var(--ink); line-height: 1.7; overflow-x: auto; }
+.fbox .hot { color: var(--accent); font-weight: 700; }
+.kv { display: grid; grid-template-columns: 1fr auto; gap: 8px 14px; font-family: var(--mono); font-size: 13.5px; }
+.kv .k { color: var(--ink-soft); }
+.kv .v { font-weight: 700; text-align: right; }
+.kv .v.hot { color: var(--accent); }
+.tip { font-size: 13px; line-height: 1.55; color: var(--ink-soft); border-left: 3px solid var(--accent); padding: 4px 0 4px 14px; margin-top: 4px; }
+.tip b { color: var(--ink); }

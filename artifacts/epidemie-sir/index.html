@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Épidémie · antsamath</title>
+<script>document.documentElement.dataset.theme=localStorage.getItem("antsamath-theme")||"light";document.documentElement.lang=localStorage.getItem("antsamath-lang")||"fr";</script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Lexend:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../assets/theme-a.css" />
+<link rel="stylesheet" href="../../assets/artifact.css" />
+<style>
+  body { --accent: #D32C6D; }
+  html[data-theme="dark"] body { --accent: #FF6FA3; }
+</style>
+</head>
+<body>
+  <header class="art-nav">
+    <a class="back" href="../../index.html">← <span data-fr="Accueil" data-en="Home">Accueil</span></a>
+    <div class="art-head">
+      <div class="tag" data-fr="Dynamique · Modèle SIR" data-en="Dynamics · SIR model">Dynamique · Modèle SIR</div>
+      <h1 data-fr="Propagation d’une épidémie" data-en="Spread of an epidemic">Propagation d’une épidémie</h1>
+    </div>
+    <div class="art-tools">
+      <button class="themebtn" type="button"></button>
+      <button class="langbtn" type="button">EN</button>
+    </div>
+  </header>
+
+  <main class="art-main">
+    <div class="stage-wrap">
+      <div class="stage">
+        <canvas id="cv"></canvas>
+        <div class="readouts">
+          <span class="pill" style="--accent:#4F8DF7">S <b id="r-s" style="color:#4F8DF7">0</b></span>
+          <span class="pill">I <b id="r-i">0</b></span>
+          <span class="pill" style="--accent:#7E8898">R <b id="r-r" style="color:#7E8898">0</b></span>
+        </div>
+        <div class="legend">
+          <span><i style="background:#4F8DF7"></i><span data-fr="Sains (S)" data-en="Susceptible (S)">Sains (S)</span></span>
+          <span><i style="background:#D32C6D"></i><span data-fr="Infectés (I)" data-en="Infected (I)">Infectés (I)</span></span>
+          <span><i style="background:#7E8898"></i><span data-fr="Guéris (R)" data-en="Recovered (R)">Guéris (R)</span></span>
+        </div>
+      </div>
+    </div>
+
+    <aside class="panel">
+      <div class="block">
+        <h3><span class="ic">📈</span><span data-fr="Courbe S · I · R" data-en="S · I · R curve">Courbe S · I · R</span></h3>
+        <canvas id="chart" style="width:100%;height:150px;display:block"></canvas>
+      </div>
+
+      <div class="block">
+        <h3><span class="ic">▶</span><span data-fr="Commandes" data-en="Controls">Commandes</span></h3>
+        <div class="btnrow">
+          <button class="mini primary" id="btn-play" data-fr="Pause" data-en="Pause">Pause</button>
+          <button class="mini ghost" id="btn-reset" data-fr="Nouvelle épidémie" data-en="New outbreak">Nouvelle épidémie</button>
+        </div>
+      </div>
+
+      <div class="block">
+        <h3><span class="ic">⚙</span><span data-fr="Les paramètres" data-en="Parameters">Les paramètres</span></h3>
+        <div class="ctrl">
+          <label><span data-fr="Population" data-en="Population">Population</span><span class="val" id="v-n">220</span></label>
+          <input type="range" id="s-n" min="60" max="320" step="10" value="220" />
+        </div>
+        <div class="ctrl">
+          <label><span data-fr="Contagiosité β" data-en="Contagiousness β">Contagiosité β</span><span class="val" id="v-beta">0.30</span></label>
+          <input type="range" id="s-beta" min="0.05" max="0.6" step="0.01" value="0.3" />
+        </div>
+        <div class="ctrl">
+          <label><span data-fr="Guérison γ" data-en="Recovery γ">Guérison γ</span><span class="val" id="v-gamma">0.030</span></label>
+          <input type="range" id="s-gamma" min="0.008" max="0.12" step="0.002" value="0.03" />
+        </div>
+        <div class="ctrl">
+          <label><span data-fr="Mobilité" data-en="Mobility">Mobilité</span><span class="val" id="v-mob">60%</span></label>
+          <input type="range" id="s-mob" min="0" max="100" step="5" value="60" />
+        </div>
+        <div class="ctrl">
+          <label><span data-fr="Vaccinés au départ" data-en="Vaccinated at start">Vaccinés au départ</span><span class="val" id="v-vax">0%</span></label>
+          <input type="range" id="s-vax" min="0" max="90" step="1" value="0" />
+        </div>
+      </div>
+
+      <div class="block">
+        <h3><span class="ic">∑</span><span data-fr="Indicateurs" data-en="Indicators">Indicateurs</span></h3>
+        <div class="kv">
+          <span class="k">R₀ = β ⁄ γ</span><span class="v hot" id="r-r0">—</span>
+          <span class="k" data-fr="Seuil d’immunité" data-en="Herd-immunity threshold">Seuil d’immunité</span><span class="v" id="r-thr">—</span>
+          <span class="k" data-fr="Pic d’infectés" data-en="Infection peak">Pic d’infectés</span><span class="v" id="r-peak">0</span>
+          <span class="k" data-fr="Touchés au total" data-en="Total affected">Touchés au total</span><span class="v" id="r-tot">0%</span>
+        </div>
+      </div>
+
+      <div class="block lesson">
+        <h3><span class="ic">𝑓</span><span data-fr="La notion" data-en="The idea">La notion</span></h3>
+        <p data-fr="Le <strong>modèle SIR</strong> répartit la population en trois compartiments : <strong>S</strong>ains (sensibles), <strong>I</strong>nfectés, <strong>R</strong>etirés (guéris/immunisés). Les gens passent de S → I → R." data-en="The <strong>SIR model</strong> splits the population into three compartments: <strong>S</strong>usceptible, <strong>I</strong>nfected, <strong>R</strong>emoved (recovered/immune). People move S → I → R." data-html="1"></p>
+        <div class="fbox">dS⁄dt = −β·S·I⁄N<br>dI⁄dt = β·S·I⁄N − γ·I<br>dR⁄dt = γ·I</div>
+        <p data-fr="Le nombre clé est <strong>R₀ = β ⁄ γ</strong> : le nombre moyen de personnes qu’un malade contamine. Si <strong>R₀ &gt; 1</strong>, l’épidémie explose ; si <strong>R₀ &lt; 1</strong>, elle s’éteint." data-en="The key number is <strong>R₀ = β ⁄ γ</strong>: the average number of people one sick person infects. If <strong>R₀ &gt; 1</strong>, the epidemic explodes; if <strong>R₀ &lt; 1</strong>, it dies out." data-html="1"></p>
+        <div class="fbox"><span data-fr="Seuil d’immunité collective" data-en="Herd-immunity threshold">Seuil d’immunité collective</span> = 1 − 1⁄R₀</div>
+        <p class="tip" data-fr="<b>Essaie :</b> monte la vaccination au-dessus du seuil affiché — l’épidémie n’arrive plus à démarrer. C’est l’<strong>immunité collective</strong>. Baisse β pour « aplatir la courbe »." data-en="<b>Try it:</b> raise vaccination above the shown threshold — the epidemic can no longer take off. That’s <strong>herd immunity</strong>. Lower β to “flatten the curve.”" data-html="1"></p>
+      </div>
+    </aside>
+  </main>
+
+  <script src="../../assets/common.js"></script>
+  <script src="sim.js"></script>
+</body>
+</html>

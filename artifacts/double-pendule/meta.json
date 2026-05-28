@@ -1,0 +1,10 @@
+{
+  "sketch": "chaos",
+  "color": "#FF5247",
+  "cat": "dynamique",
+  "level": 3,
+  "formula": "θ̈ = f(θ, θ̇)",
+  "date": "2026-05-27",
+  "fr": { "title": "Le double pendule", "desc": "Un système déterministe… et pourtant totalement imprévisible. L’effet papillon en direct." },
+  "en": { "title": "The Double Pendulum", "desc": "A deterministic system… yet utterly unpredictable. The butterfly effect, live." }
+}

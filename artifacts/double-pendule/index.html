@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Double pendule · antsamath</title>
+<script>document.documentElement.dataset.theme=localStorage.getItem("antsamath-theme")||"light";document.documentElement.lang=localStorage.getItem("antsamath-lang")||"fr";</script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Lexend:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../assets/theme-a.css" />
+<link rel="stylesheet" href="../../assets/artifact.css" />
+<style>
+  body { --accent: #E23A30; }
+  html[data-theme="dark"] body { --accent: #FF6B61; }
+</style>
+</head>
+<body>
+  <header class="art-nav">
+    <a class="back" href="../../index.html">← <span data-fr="Accueil" data-en="Home">Accueil</span></a>
+    <div class="art-head">
+      <div class="tag" data-fr="Dynamique · Théorie du chaos" data-en="Dynamics · Chaos theory">Dynamique · Théorie du chaos</div>
+      <h1 data-fr="Le double pendule" data-en="The double pendulum">Le double pendule</h1>
+    </div>
+    <div class="art-tools">
+      <button class="themebtn" type="button"></button>
+      <button class="langbtn" type="button">EN</button>
+    </div>
+  </header>
+
+  <main class="art-main">
+    <div class="stage-wrap">
+      <div class="stage">
+        <canvas id="cv"></canvas>
+        <div class="readouts">
+          <span class="pill">θ₁ <b id="r-t1">0°</b></span>
+          <span class="pill">θ₂ <b id="r-t2">0°</b></span>
+          <span class="pill" id="pill-gap" style="display:none"><span data-fr="écart" data-en="gap">écart</span> <b id="r-gap">0</b></span>
+        </div>
+        <div class="legend" id="legend"></div>
+      </div>
+    </div>
+
+    <aside class="panel">
+      <div class="block">
+        <h3><span class="ic">▶</span><span data-fr="Lâcher le pendule" data-en="Drop the pendulum">Lâcher le pendule</span></h3>
+        <div class="btnrow" style="margin-bottom:16px">
+          <button class="mini primary" id="btn-play" data-fr="Pause" data-en="Pause">Pause</button>
+          <button class="mini ghost" id="btn-reset" data-fr="Réinitialiser" data-en="Reset">Réinitialiser</button>
+        </div>
+        <div class="toggle-row">
+          <span data-fr="Pendule jumeau (écart de 0,001 rad)" data-en="Twin pendulum (0.001 rad apart)">Pendule jumeau (écart de 0,001 rad)</span>
+          <label class="switch"><input type="checkbox" id="twin" /><span class="track"></span></label>
+        </div>
+      </div>
+
+      <div class="block">
+        <h3><span class="ic">∠</span><span data-fr="Conditions initiales" data-en="Initial conditions">Conditions initiales</span></h3>
+        <div class="ctrl">
+          <label><span data-fr="Angle θ₁ de départ" data-en="Starting angle θ₁">Angle θ₁ de départ</span><span class="val" id="v-t1">120°</span></label>
+          <input type="range" id="s-t1" min="0" max="180" step="1" value="120" />
+        </div>
+        <div class="ctrl">
+          <label><span data-fr="Angle θ₂ de départ" data-en="Starting angle θ₂">Angle θ₂ de départ</span><span class="val" id="v-t2">150°</span></label>
+          <input type="range" id="s-t2" min="0" max="180" step="1" value="150" />
+        </div>
+      </div>
+
+      <div class="block">
+        <h3><span class="ic">⚙</span><span data-fr="Les paramètres" data-en="Parameters">Les paramètres</span></h3>
+        <div class="ctrl">
+          <label><span data-fr="Longueur L₁" data-en="Length L₁">Longueur L₁</span><span class="val" id="v-l1">1.00</span></label>
+          <input type="range" id="s-l1" min="0.5" max="1.5" step="0.05" value="1" />
+        </div>
+        <div class="ctrl">
+          <label><span data-fr="Longueur L₂" data-en="Length L₂">Longueur L₂</span><span class="val" id="v-l2">1.00</span></label>
+          <input type="range" id="s-l2" min="0.5" max="1.5" step="0.05" value="1" />
+        </div>
+        <div class="ctrl">
+          <label><span data-fr="Masse m₁" data-en="Mass m₁">Masse m₁</span><span class="val" id="v-m1">1.0</span></label>
+          <input type="range" id="s-m1" min="0.5" max="3" step="0.1" value="1" />
+        </div>
+        <div class="ctrl">
+          <label><span data-fr="Masse m₂" data-en="Mass m₂">Masse m₂</span><span class="val" id="v-m2">1.0</span></label>
+          <input type="range" id="s-m2" min="0.5" max="3" step="0.1" value="1" />
+        </div>
+        <div class="ctrl">
+          <label><span data-fr="Gravité g" data-en="Gravity g">Gravité g</span><span class="val" id="v-g">9.8</span></label>
+          <input type="range" id="s-g" min="1" max="20" step="0.1" value="9.8" />
+        </div>
+        <div class="ctrl">
+          <label><span data-fr="Frottement" data-en="Friction">Frottement</span><span class="val" id="v-damp">0%</span></label>
+          <input type="range" id="s-damp" min="0" max="100" step="1" value="0" />
+        </div>
+      </div>
+
+      <div class="block lesson">
+        <h3><span class="ic">𝑓</span><span data-fr="La notion" data-en="The idea">La notion</span></h3>
+        <p data-fr="Un <strong>double pendule</strong> = un pendule accroché au bout d’un autre. Ses équations du mouvement (issues des lois de Newton / de Lagrange) sont parfaitement <strong>déterministes</strong> : connaître l’état exact à un instant détermine tout l’avenir." data-en="A <strong>double pendulum</strong> = a pendulum hanging from another. Its equations of motion (from Newton’s / Lagrange’s laws) are perfectly <strong>deterministic</strong>: knowing the exact state at one instant determines the whole future." data-html="1"></p>
+        <div class="fbox">θ̈₁ = f₁(θ₁, θ₂, θ̇₁, θ̇₂)<br>θ̈₂ = f₂(θ₁, θ₂, θ̇₁, θ̇₂)</div>
+        <p data-fr="Mais ce système est <strong>chaotique</strong> : un écart minuscule sur l’angle de départ enfle de façon exponentielle. C’est la <strong>sensibilité aux conditions initiales</strong>, l’« effet papillon »." data-en="But this system is <strong>chaotic</strong>: a tiny change in the starting angle grows exponentially. This is <strong>sensitivity to initial conditions</strong> — the “butterfly effect.”" data-html="1"></p>
+        <p class="tip" data-fr="<b>Essaie :</b> active le pendule jumeau. Les deux partent quasi identiques… puis divergent complètement. Sans frottement, l’<strong>énergie</strong> se conserve." data-en="<b>Try it:</b> turn on the twin pendulum. The two start almost identical… then diverge completely. With no friction, <strong>energy</strong> is conserved." data-html="1"></p>
+      </div>
+    </aside>
+  </main>
+
+  <script src="../../assets/common.js"></script>
+  <script src="sim.js"></script>
+</body>
+</html>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Contact · antsamath</title>
+<script>document.documentElement.dataset.theme=localStorage.getItem("antsamath-theme")||"light";document.documentElement.lang=localStorage.getItem("antsamath-lang")||"fr";</script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Lexend:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/theme-a.css" />
+<style>
+  .wrap { max-width: 760px; margin: 0 auto; padding: clamp(36px, 7vw, 80px) clamp(18px, 5vw, 40px) 60px; }
+  .kicker { display: inline-flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 12.5px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, var(--bg)); padding: 7px 14px; border-radius: 999px; margin-bottom: 22px; }
+  h1 { font-family: var(--display); font-weight: 800; letter-spacing: -.03em; font-size: clamp(34px, 6vw, 58px); line-height: 1; margin: 0 0 16px; text-wrap: balance; }
+  .sub { font-size: clamp(16px, 2.2vw, 19px); color: var(--ink-soft); line-height: 1.55; max-width: 540px; margin: 0 0 34px; font-weight: 300; }
+  .channels { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 40px; }
+  .channel { display: flex; flex-direction: column; gap: 4px; padding: 22px; border-radius: 18px; border: 1px solid var(--line); background: var(--card); transition: transform .2s, box-shadow .25s, border-color .2s; }
+  .channel:hover { transform: translateY(-4px); box-shadow: 0 18px 40px -22px var(--shadow); border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); }
+  .channel .ic { width: 44px; height: 44px; border-radius: 13px; display: grid; place-items: center; margin-bottom: 12px; }
+  .channel .ic svg { width: 24px; height: 24px; }
+  .channel .lab { font-family: var(--mono); font-size: 11.5px; text-transform: uppercase; letter-spacing: .06em; color: var(--ink-soft); }
+  .channel .val { font-family: var(--display); font-weight: 700; font-size: 19px; letter-spacing: -.01em; }
+  .channel.fb .ic { background: #1877F2; color: #fff; }
+  .channel.mail .ic { background: var(--accent); color: #fff; }
+  form { background: var(--card); border: 1px solid var(--line); border-radius: 20px; padding: clamp(22px, 4vw, 32px); }
+  form h2 { font-family: var(--display); font-weight: 800; font-size: 24px; margin: 0 0 6px; letter-spacing: -.02em; }
+  form .hint { color: var(--ink-soft); font-size: 14px; margin: 0 0 22px; }
+  .field { margin-bottom: 16px; }
+  .field label { display: block; font-size: 13.5px; font-weight: 500; margin-bottom: 7px; }
+  .field input, .field textarea { width: 100%; font-family: var(--body); font-size: 15px; color: var(--ink); background: var(--bg); border: 1.5px solid var(--line); border-radius: 12px; padding: 12px 14px; transition: border-color .18s; }
+  .field input:focus, .field textarea:focus { outline: none; border-color: var(--accent); }
+  .field textarea { resize: vertical; min-height: 120px; line-height: 1.5; }
+</style>
+</head>
+<body>
+  <nav class="nav" id="nav">
+    <a href="index.html" class="brand">
+      <span class="brand-mark"><span class="orbit"></span><span class="sun"></span><span class="moon"></span></span>
+      antsa<b>math</b>
+    </a>
+    <span class="nav-spacer"></span>
+    <div class="nav-links">
+      <a class="txtlink" href="index.html" data-fr="← Accueil" data-en="← Home">← Accueil</a>
+      <button class="themebtn" type="button"></button>
+      <button class="langbtn" type="button">EN</button>
+    </div>
+  </nav>
+
+  <div class="wrap">
+    <span class="kicker">✦ <span data-fr="On vous répond" data-en="We reply">On vous répond</span></span>
+    <h1 data-fr="Parlons maths." data-en="Let’s talk maths.">Parlons maths.</h1>
+    <p class="sub" data-fr="Une idée de simulation, une question, un bug, une envie de contribuer ? Écrivez-nous — on adore les curieux." data-en="An idea for a simulation, a question, a bug, a wish to contribute? Drop us a line — we love the curious.">Une idée de simulation, une question, un bug, une envie de contribuer ? Écrivez-nous — on adore les curieux.</p>
+
+    <div class="channels">
+      <a class="channel fb" href="https://www.facebook.com/Mathmantique" target="_blank" rel="noopener">
+        <span class="ic"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.68.24 2.68.24v2.97h-1.51c-1.49 0-1.96.93-1.96 1.89v2.25h3.33l-.53 3.49h-2.8V24C19.61 23.1 24 18.1 24 12.07z"/></svg></span>
+        <span class="lab">Facebook</span>
+        <span class="val">Mathmantique</span>
+      </a>
+      <a class="channel mail" href="mailto:antsamath.cdf@gmail.com">
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="3"/><path d="m3 6 9 7 9-7"/></svg></span>
+        <span class="lab" data-fr="Email" data-en="Email">Email</span>
+        <span class="val">antsamath.cdf<wbr/>@gmail.com</span>
+      </a>
+    </div>
+
+    <form id="contact-form">
+      <h2 data-fr="Envoyer un message" data-en="Send a message">Envoyer un message</h2>
+      <p class="hint" data-fr="Ce formulaire ouvre votre messagerie avec le message pré-rempli." data-en="This form opens your email app with the message pre-filled.">Ce formulaire ouvre votre messagerie avec le message pré-rempli.</p>
+      <div class="field">
+        <label for="f-name" data-fr="Votre nom" data-en="Your name">Votre nom</label>
+        <input id="f-name" type="text" autocomplete="name" />
+      </div>
+      <div class="field">
+        <label for="f-msg" data-fr="Votre message" data-en="Your message">Votre message</label>
+        <textarea id="f-msg" data-fr-ph="Bonjour antsamath, j’aimerais…" data-en-ph="Hi antsamath, I’d like to…"></textarea>
+      </div>
+      <button class="btn btn-primary" type="submit"><span data-fr="Ouvrir mon mail" data-en="Open my email">Ouvrir mon mail</span> →</button>
+    </form>
+  </div>
+
+  <footer>
+    <div class="foot-inner">
+      <div class="fnote"><b>antsamath</b> · <span data-fr="conçu avec curiosité" data-en="made with curiosity">conçu avec curiosité</span></div>
+      <div class="foot-links">
+        <a href="index.html" data-fr="Accueil" data-en="Home">Accueil</a>
+        <a href="https://www.facebook.com/Mathmantique" target="_blank" rel="noopener">Facebook</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/common.js"></script>
+  <script>
+    Antsa.initChrome();
+    function applyPlaceholders() {
+      document.querySelectorAll("[data-fr-ph]").forEach(e => {
+        e.placeholder = Antsa.getLang() === "fr" ? e.dataset.frPh : e.dataset.enPh;
+      });
+    }
+    document.addEventListener("antsa:lang", applyPlaceholders);
+    applyPlaceholders();
+    document.getElementById("contact-form").addEventListener("submit", e => {
+      e.preventDefault();
+      const name = document.getElementById("f-name").value.trim();
+      const msg = document.getElementById("f-msg").value.trim();
+      const subj = Antsa.t("Message via antsamath", "Message via antsamath");
+      const body = (msg || "") + (name ? "\n\n— " + name : "");
+      window.location.href = "mailto:antsamath.cdf@gmail.com?subject=" + encodeURIComponent(subj) + "&body=" + encodeURIComponent(body);
+    });
+  </script>
+</body>
+</html>

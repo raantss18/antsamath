@@ -318,6 +318,37 @@
       };
     },
 
+    /* 13 — propagation épidémique (agents SIR) */
+    epidemic(ctx, color) {
+      const N = 46, ag = [];
+      for (let i = 0; i < N; i++) ag.push({ x: Math.random(), y: Math.random(), vx: (Math.random() - .5) * .006, vy: (Math.random() - .5) * .006, s: i < 2 ? 1 : 0, t: 0 });
+      let f = 0;
+      return (w, h) => {
+        f++;
+        for (const a of ag) {
+          a.x += a.vx; a.y += a.vy;
+          if (a.x < 0 || a.x > 1) a.vx *= -1;
+          if (a.y < 0 || a.y > 1) a.vy *= -1;
+          a.x = Math.max(0, Math.min(1, a.x)); a.y = Math.max(0, Math.min(1, a.y));
+          if (a.s === 1) { a.t++; if (a.t > 240) a.s = 2; }
+        }
+        for (let i = 0; i < N; i++) for (let j = i + 1; j < N; j++) {
+          const A = ag[i], B = ag[j];
+          if ((A.s === 1 && B.s === 0) || (B.s === 1 && A.s === 0)) {
+            if (Math.hypot((A.x - B.x) * w, (A.y - B.y) * h) < 14) { if (A.s === 0) A.s = 1; if (B.s === 0) B.s = 1; }
+          }
+        }
+        if (f % 620 === 0) for (const a of ag) { a.s = Math.random() < 0.05 ? 1 : 0; a.t = 0; }
+        ctx.clearRect(0, 0, w, h);
+        for (const a of ag) {
+          ctx.globalAlpha = a.s === 0 ? 0.5 : 0.9;
+          ctx.fillStyle = a.s === 1 ? color : a.s === 2 ? "#9aa0ad" : "#6f8cff";
+          ctx.beginPath(); ctx.arc(a.x * w, a.y * h, a.s === 1 ? 3 : 2.4, 0, TAU); ctx.fill();
+        }
+        ctx.globalAlpha = 1;
+      };
+    },
+
     /* HÉROS A — Lissajous discrets multicolores */
     heroLissajous(ctx, colors) {
       let t = 0;

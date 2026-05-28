@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Monte Carlo · antsamath</title>
+<script>document.documentElement.dataset.theme=localStorage.getItem("antsamath-theme")||"light";document.documentElement.lang=localStorage.getItem("antsamath-lang")||"fr";</script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Lexend:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../assets/theme-a.css" />
+<link rel="stylesheet" href="../../assets/artifact.css" />
+<style>
+  body { --accent: #E8890C; }
+  html[data-theme="dark"] body { --accent: #FFB84D; }
+</style>
+</head>
+<body>
+  <header class="art-nav">
+    <a class="back" href="../../index.html">← <span data-fr="Accueil" data-en="Home">Accueil</span></a>
+    <div class="art-head">
+      <div class="tag" data-fr="Probabilités · Méthode de Monte Carlo" data-en="Probability · Monte Carlo method">Probabilités · Méthode de Monte Carlo</div>
+      <h1 data-fr="Estimer une aire au hasard" data-en="Estimating an area at random">Estimer une aire au hasard</h1>
+    </div>
+    <div class="art-tools">
+      <button class="themebtn" type="button"></button>
+      <button class="langbtn" type="button">EN</button>
+    </div>
+  </header>
+
+  <main class="art-main">
+    <div class="stage-wrap">
+      <div class="stage">
+        <canvas id="cv"></canvas>
+        <div class="readouts">
+          <span class="pill" data-fr="points n :" data-en="points n:">points n :</span><span class="pill"><b id="r-n">0</b></span>
+          <span class="pill" data-fr="dedans k :" data-en="inside k:">dedans k :</span><span class="pill"><b id="r-k">0</b></span>
+        </div>
+        <div class="legend">
+          <span><i style="background:#E8890C"></i><span data-fr="dans la forme" data-en="inside shape">dans la forme</span></span>
+          <span><i style="background:#9aa0ad"></i><span data-fr="dehors" data-en="outside">dehors</span></span>
+        </div>
+      </div>
+    </div>
+
+    <aside class="panel">
+      <div class="block">
+        <h3><span class="ic">◆</span><span data-fr="La forme" data-en="The shape">La forme</span></h3>
+        <div class="seg" id="shapes">
+          <button data-shape="disque" class="on" data-fr="Disque" data-en="Disk">Disque</button>
+          <button data-shape="ellipse" data-fr="Ellipse" data-en="Ellipse">Ellipse</button>
+          <button data-shape="astroide" data-fr="Astroïde" data-en="Astroid">Astroïde</button>
+          <button data-shape="losange" data-fr="Losange" data-en="Diamond">Losange</button>
+        </div>
+
+        <div class="ctrl" id="c-r" style="margin-top:16px">
+          <label><span data-fr="Rayon r" data-en="Radius r">Rayon r</span><span class="val" id="v-r">0.80</span></label>
+          <input type="range" id="s-r" min="0.3" max="1" step="0.02" value="0.8" />
+        </div>
+        <div class="ctrl" id="c-a" style="display:none">
+          <label><span data-fr="Demi-axe a" data-en="Semi-axis a">Demi-axe a</span><span class="val" id="v-a">0.90</span></label>
+          <input type="range" id="s-a" min="0.3" max="1" step="0.02" value="0.9" />
+        </div>
+        <div class="ctrl" id="c-b" style="display:none">
+          <label><span data-fr="Demi-axe b" data-en="Semi-axis b">Demi-axe b</span><span class="val" id="v-b">0.55</span></label>
+          <input type="range" id="s-b" min="0.3" max="1" step="0.02" value="0.55" />
+        </div>
+        <div class="ctrl" id="c-size" style="display:none">
+          <label><span data-fr="Taille" data-en="Size">Taille</span><span class="val" id="v-size">0.90</span></label>
+          <input type="range" id="s-size" min="0.4" max="1" step="0.02" value="0.9" />
+        </div>
+      </div>
+
+      <div class="block">
+        <h3><span class="ic">⚙</span><span data-fr="La simulation" data-en="The simulation">La simulation</span></h3>
+        <div class="ctrl">
+          <label><span data-fr="Nombre de points (max)" data-en="Number of points (max)">Nombre de points (max)</span><span class="val" id="v-n">10 000</span></label>
+          <input type="range" id="s-n" min="500" max="40000" step="500" value="10000" />
+        </div>
+        <div class="ctrl">
+          <label><span data-fr="Vitesse" data-en="Speed">Vitesse</span><span class="val" id="v-speed">120 / image</span></label>
+          <input type="range" id="s-speed" min="10" max="600" step="10" value="120" />
+        </div>
+        <div class="btnrow">
+          <button class="mini primary" id="btn-play" data-fr="Pause" data-en="Pause">Pause</button>
+          <button class="mini ghost" id="btn-reset" data-fr="Relancer" data-en="Restart">Relancer</button>
+        </div>
+      </div>
+
+      <div class="block">
+        <h3><span class="ic">∑</span><span data-fr="Résultats en direct" data-en="Live results">Résultats en direct</span></h3>
+        <div class="kv">
+          <span class="k" data-fr="Aire du carré (□)" data-en="Square area (□)">Aire du carré (□)</span><span class="v">4.0000</span>
+          <span class="k" data-fr="Estimation" data-en="Estimate">Estimation</span><span class="v hot" id="r-est">—</span>
+          <span class="k" data-fr="Valeur exacte" data-en="Exact value">Valeur exacte</span><span class="v" id="r-exact">—</span>
+          <span class="k" data-fr="Erreur relative" data-en="Relative error">Erreur relative</span><span class="v" id="r-err">—</span>
+        </div>
+      </div>
+
+      <div class="block lesson">
+        <h3><span class="ic">𝑓</span><span data-fr="La notion" data-en="The idea">La notion</span></h3>
+        <p data-fr="On enferme la forme dans un carré de côté 2 (aire = 4). On tire des points <strong>au hasard</strong> et uniformément dans ce carré. La proportion de points qui tombent <strong>dans</strong> la forme estime la proportion d’aire occupée." data-en="We trap the shape inside a square of side 2 (area = 4). We draw points <strong>at random</strong>, uniformly, in that square. The fraction of points landing <strong>inside</strong> the shape estimates its fraction of area." data-html="1"></p>
+        <div class="fbox" id="f-generic"><span class="hot">A</span> ≈ A<sub>□</sub> · <span class="hot">k</span> ⁄ <span class="hot">n</span> = 4 · k ⁄ n</div>
+        <p data-fr="C’est la <strong>loi des grands nombres</strong> : plus n est grand, plus l’estimation se rapproche de la vraie aire. L’erreur décroît comme 1⁄√n." data-en="This is the <strong>law of large numbers</strong>: the larger n, the closer the estimate gets to the true area. The error shrinks like 1⁄√n." data-html="1"></p>
+        <div class="fbox" id="f-exact">—</div>
+        <p class="tip" data-fr="<b>Astuce :</b> avec un disque de rayon 1, l’aire vaut π. Monte Carlo devient alors une machine à estimer π !" data-en="<b>Tip:</b> with a disk of radius 1, the area equals π. Monte Carlo then becomes a π-estimating machine!" data-html="1"></p>
+      </div>
+    </aside>
+  </main>
+
+  <script src="../../assets/common.js"></script>
+  <script src="sim.js"></script>
+</body>
+</html>
