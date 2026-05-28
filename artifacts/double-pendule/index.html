@@ -14,52 +14,17 @@
   body { --accent: #E23A30; }
   html[data-theme="dark"] body { --accent: #FF6B61; }
 
-  /* ── sélecteur de mode ── */
-  .mode-row {
-    display: flex;
-    gap: 6px;
-    margin-bottom: 16px;
-  }
+  .mode-row { display:flex; gap:6px; margin-bottom:16px; }
   .mode-btn {
-    flex: 1;
-    padding: 7px 4px;
-    border-radius: 8px;
-    border: 1.5px solid var(--border, #ddd);
-    background: transparent;
-    color: var(--fg, #222);
-    font-family: inherit;
-    font-size: 0.78rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.15s, border-color 0.15s, color 0.15s;
-    line-height: 1.2;
+    flex:1; padding:7px 4px;
+    border-radius:8px; border:1.5px solid var(--border,#ddd);
+    background:transparent; color:var(--fg,#222);
+    font-family:inherit; font-size:0.78rem; font-weight:600;
+    cursor:pointer; transition:background .15s,border-color .15s,color .15s;
+    line-height:1.2;
   }
-  .mode-btn:hover { border-color: var(--accent); color: var(--accent); }
-  .mode-btn.active {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: #fff;
-  }
-
-  /* ── readouts étendus ── */
-  .readouts {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    padding: 10px 12px;
-    pointer-events: none;
-  }
-  .pill {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.72rem;
-    background: var(--card, #fff);
-    border: 1px solid var(--border, #ddd);
-    border-radius: 20px;
-    padding: 3px 10px;
-    white-space: nowrap;
-    opacity: 0.93;
-  }
-  .pill b { color: var(--accent); margin-left: 4px; }
+  .mode-btn:hover { border-color:var(--accent); color:var(--accent); }
+  .mode-btn.active { background:var(--accent); border-color:var(--accent); color:#fff; }
 </style>
 </head>
 <body>
@@ -83,11 +48,11 @@
           <span class="pill">θ₁ <b id="r-t1">0°</b></span>
           <span class="pill" id="pill-t2">θ₂ <b id="r-t2">0°</b></span>
           <span class="pill" id="pill-t3" style="display:none">θ₃ <b id="r-t3">0°</b></span>
-          <span class="pill">ω₁ <b id="r-w1">0 rad/s</b></span>
-          <span class="pill" id="pill-w2">ω₂ <b id="r-w2">0 rad/s</b></span>
-          <span class="pill" id="pill-w3" style="display:none">ω₃ <b id="r-w3">0 rad/s</b></span>
-          <span class="pill">E <b id="r-e">0 J</b></span>
-          <span class="pill">T <b id="r-T">0 s</b></span>
+          <span class="pill">ω₁ <b id="r-w1">0</b></span>
+          <span class="pill" id="pill-w2">ω₂ <b id="r-w2">0</b></span>
+          <span class="pill" id="pill-w3" style="display:none">ω₃ <b id="r-w3">0</b></span>
+          <span class="pill">E <b id="r-e">0</b></span>
+          <span class="pill">T <b id="r-T">0</b></span>
           <span class="pill" id="pill-gap" style="display:none"><span data-fr="écart" data-en="gap">écart</span> <b id="r-gap">0</b></span>
         </div>
         <div class="legend" id="legend"></div>
@@ -96,7 +61,7 @@
 
     <aside class="panel">
 
-      <!-- Sélecteur de mode -->
+      <!-- Mode + contrôles principaux -->
       <div class="block">
         <h3><span class="ic">⊙</span><span data-fr="Type de pendule" data-en="Pendulum type">Type de pendule</span></h3>
         <div class="mode-row">
@@ -104,7 +69,7 @@
           <button class="mode-btn active" data-mode="2" data-fr="Double" data-en="Double">Double</button>
           <button class="mode-btn" data-mode="3" data-fr="Triple" data-en="Triple">Triple</button>
         </div>
-        <div class="btnrow" style="margin-bottom:12px">
+        <div class="btnrow" style="margin-bottom:16px">
           <button class="mini primary" id="btn-play" data-fr="Pause" data-en="Pause">Pause</button>
           <button class="mini ghost" id="btn-reset" data-fr="Réinitialiser" data-en="Reset">Réinitialiser</button>
         </div>
@@ -114,16 +79,90 @@
         </div>
       </div>
 
-      <!-- Paramètres dynamiques (rempli par JS) -->
+      <!-- Conditions initiales -->
       <div class="block">
-        <h3><span class="ic">⚙</span><span data-fr="Paramètres" data-en="Parameters">Paramètres</span></h3>
-        <div id="param-blocks"></div>
+        <h3><span class="ic">∠</span><span data-fr="Conditions initiales" data-en="Initial conditions">Conditions initiales</span></h3>
+        <div class="ctrl">
+          <label><span data-fr="Angle θ₁ de départ" data-en="Starting angle θ₁">Angle θ₁ de départ</span><span class="val" id="v-t1">120°</span></label>
+          <input type="range" id="s-t1" min="0" max="180" step="1" value="120" />
+        </div>
+        <div class="ctrl" id="row-t2">
+          <label><span data-fr="Angle θ₂ de départ" data-en="Starting angle θ₂">Angle θ₂ de départ</span><span class="val" id="v-t2">150°</span></label>
+          <input type="range" id="s-t2" min="0" max="180" step="1" value="150" />
+        </div>
+        <div class="ctrl" id="row-t3" style="display:none">
+          <label><span data-fr="Angle θ₃ de départ" data-en="Starting angle θ₃">Angle θ₃ de départ</span><span class="val" id="v-t3">90°</span></label>
+          <input type="range" id="s-t3" min="0" max="180" step="1" value="90" />
+        </div>
       </div>
 
-      <!-- Théorie (contenu rempli par JS) -->
-      <div class="block lesson">
+      <!-- Paramètres -->
+      <div class="block">
+        <h3><span class="ic">⚙</span><span data-fr="Paramètres" data-en="Parameters">Paramètres</span></h3>
+        <!-- Longueurs -->
+        <div class="ctrl">
+          <label><span data-fr="Longueur L₁" data-en="Length L₁">Longueur L₁</span><span class="val" id="v-l1">1.00</span></label>
+          <input type="range" id="s-l1" min="0.5" max="1.5" step="0.05" value="1" />
+        </div>
+        <div class="ctrl" id="row-l2">
+          <label><span data-fr="Longueur L₂" data-en="Length L₂">Longueur L₂</span><span class="val" id="v-l2">1.00</span></label>
+          <input type="range" id="s-l2" min="0.5" max="1.5" step="0.05" value="1" />
+        </div>
+        <div class="ctrl" id="row-l3" style="display:none">
+          <label><span data-fr="Longueur L₃" data-en="Length L₃">Longueur L₃</span><span class="val" id="v-l3">0.80</span></label>
+          <input type="range" id="s-l3" min="0.3" max="1.2" step="0.05" value="0.8" />
+        </div>
+        <!-- Masses -->
+        <div class="ctrl">
+          <label><span data-fr="Masse m₁" data-en="Mass m₁">Masse m₁</span><span class="val" id="v-m1">1.0</span></label>
+          <input type="range" id="s-m1" min="0.5" max="3" step="0.1" value="1" />
+        </div>
+        <div class="ctrl" id="row-m2">
+          <label><span data-fr="Masse m₂" data-en="Mass m₂">Masse m₂</span><span class="val" id="v-m2">1.0</span></label>
+          <input type="range" id="s-m2" min="0.5" max="3" step="0.1" value="1" />
+        </div>
+        <div class="ctrl" id="row-m3" style="display:none">
+          <label><span data-fr="Masse m₃" data-en="Mass m₃">Masse m₃</span><span class="val" id="v-m3">1.0</span></label>
+          <input type="range" id="s-m3" min="0.5" max="3" step="0.1" value="1" />
+        </div>
+        <!-- Communs -->
+        <div class="ctrl">
+          <label><span data-fr="Gravité g" data-en="Gravity g">Gravité g</span><span class="val" id="v-g">9.8</span></label>
+          <input type="range" id="s-g" min="1" max="20" step="0.1" value="9.8" />
+        </div>
+        <div class="ctrl">
+          <label><span data-fr="Frottement" data-en="Friction">Frottement</span><span class="val" id="v-damp">0%</span></label>
+          <input type="range" id="s-damp" min="0" max="100" step="1" value="0" />
+        </div>
+        <div class="ctrl">
+          <label><span data-fr="Vitesse de simulation" data-en="Simulation speed">Vitesse de simulation</span><span class="val" id="v-speed">1.00×</span></label>
+          <input type="range" id="s-speed" min="0.05" max="3" step="0.05" value="1" />
+        </div>
+      </div>
+
+      <!-- Théorie : 3 blocs, un seul visible selon le mode -->
+      <div class="block lesson" id="theory-1" style="display:none">
         <h3><span class="ic">𝑓</span><span data-fr="La notion" data-en="The idea">La notion</span></h3>
-        <div id="theory-content"></div>
+        <p data-fr="Un <strong>pendule simple</strong> est une masse suspendue à un fil de longueur L, soumise à la gravité g." data-en="A <strong>simple pendulum</strong> is a mass on a string of length L subject to gravity g." data-html="1"></p>
+        <div class="fbox">θ̈ = −(g/L) sin θ</div>
+        <p data-fr="Pour les petits angles (sin θ ≈ θ), le mouvement est <strong>harmonique</strong> et la période T = 2π√(L/g) ne dépend pas de la masse. Aux grands angles, le mouvement est <strong>non linéaire</strong> mais reste régulier." data-en="For small angles (sin θ ≈ θ) the motion is <strong>harmonic</strong> and the period T = 2π√(L/g) is independent of mass. For large angles the motion is <strong>non-linear</strong> but still regular." data-html="1"></p>
+        <p class="tip" data-fr="<b>Essaie :</b> change L ou g et observe comment la période varie. Active le jumeau : les deux resteront presque parfaitement synchrones." data-en="<b>Try it:</b> change L or g and watch how the period changes. Turn on the twin — both will stay nearly in sync." data-html="1"></p>
+      </div>
+
+      <div class="block lesson" id="theory-2">
+        <h3><span class="ic">𝑓</span><span data-fr="La notion" data-en="The idea">La notion</span></h3>
+        <p data-fr="Un <strong>double pendule</strong> = un pendule accroché au bout d'un autre. Ses équations du mouvement (issues des lois de Lagrange) sont parfaitement <strong>déterministes</strong> : connaître l'état exact à un instant détermine tout l'avenir." data-en="A <strong>double pendulum</strong> = a pendulum hanging from another. Its equations of motion (from Lagrange's laws) are perfectly <strong>deterministic</strong>: knowing the exact state at one instant determines the whole future." data-html="1"></p>
+        <div class="fbox">θ̈₁ = f₁(θ₁, θ₂, θ̇₁, θ̇₂)<br>θ̈₂ = f₂(θ₁, θ₂, θ̇₁, θ̇₂)</div>
+        <p data-fr="Mais ce système est <strong>chaotique</strong> : un écart minuscule sur l'angle de départ enfle de façon exponentielle. C'est la <strong>sensibilité aux conditions initiales</strong>, l'« effet papillon »." data-en="But this system is <strong>chaotic</strong>: a tiny change in the starting angle grows exponentially. This is <strong>sensitivity to initial conditions</strong> — the &ldquo;butterfly effect.&rdquo;" data-html="1"></p>
+        <p class="tip" data-fr="<b>Essaie :</b> active le pendule jumeau. Les deux partent quasi identiques… puis divergent complètement. Sans frottement, l'<strong>énergie</strong> se conserve." data-en="<b>Try it:</b> turn on the twin pendulum. The two start almost identical… then diverge completely. With no friction, <strong>energy</strong> is conserved." data-html="1"></p>
+      </div>
+
+      <div class="block lesson" id="theory-3" style="display:none">
+        <h3><span class="ic">𝑓</span><span data-fr="La notion" data-en="The idea">La notion</span></h3>
+        <p data-fr="Un <strong>triple pendule</strong> ajoute un troisième bras. Le système possède 3 degrés de liberté couplés et devient <strong>hyperchaotique</strong> : plusieurs exposants de Lyapunov positifs." data-en="A <strong>triple pendulum</strong> adds a third arm. The system has 3 coupled degrees of freedom and becomes <strong>hyperchaotic</strong>: multiple positive Lyapunov exponents." data-html="1"></p>
+        <div class="fbox">θ̈₁ = f₁(θ₁,θ₂,θ₃,θ̇₁,θ̇₂,θ̇₃)<br>θ̈₂ = f₂(…)<br>θ̈₃ = f₃(…)</div>
+        <p data-fr="La divergence entre trajectoires voisines est encore plus rapide qu'en double pendule. Le désordre croît simultanément sur plusieurs échelles." data-en="Divergence between nearby trajectories is even faster than the double pendulum. Disorder grows simultaneously across multiple scales." data-html="1"></p>
+        <p class="tip" data-fr="<b>Essaie :</b> active le jumeau. La divergence est spectaculairement plus rapide qu'avec deux pendules. Joue sur m₃ pour voir l'effet d'un bras lourd." data-en="<b>Try it:</b> enable the twin. Divergence is spectacularly faster than with two pendulums. Play with m₃ to see the effect of a heavy third arm." data-html="1"></p>
       </div>
 
     </aside>
