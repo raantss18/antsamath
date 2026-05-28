@@ -3,82 +3,242 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>antsamath — choisir une direction</title>
+<title>antsamath — jouer avec les maths</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Lexend:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
 <style>
-  * { box-sizing: border-box; }
   :root {
-    --bg: #F4F1E8; --ink: #1B1A22; --soft: #6A6675; --line: #DAD2C0;
-    --disp: "Bricolage Grotesque", system-ui, sans-serif;
-    --mono: "JetBrains Mono", ui-monospace, monospace;
+    --bg: #FBF7EE;
+    --bg-2: #F3ECDD;
+    --ink: #1B1A22;
+    --ink-soft: #5C5867;
+    --line: #E4DBC9;
+    --card: #FFFFFF;
+    --accent: #FF6B3D;
+    --display: "Bricolage Grotesque", system-ui, sans-serif;
+    --body: "Lexend", system-ui, sans-serif;
+    --mono: "Space Mono", ui-monospace, monospace;
+    --r: 22px;
   }
-  body { margin: 0; font-family: var(--disp); background: var(--bg); color: var(--ink); min-height: 100vh; -webkit-font-smoothing: antialiased; }
-  .wrap { max-width: 1080px; margin: 0 auto; padding: clamp(32px, 6vw, 72px) clamp(20px, 5vw, 48px) 56px; }
-  .top { display: flex; align-items: center; justify-content: space-between; margin-bottom: clamp(36px, 7vw, 64px); }
-  .brand { font-family: var(--mono); font-weight: 700; font-size: 17px; }
-  .brand b { color: #FF6B3D; }
-  .badge { font-family: var(--mono); font-size: 11px; color: var(--soft); border: 1px solid var(--line); padding: 6px 11px; border-radius: 999px; }
-  h1 { font-weight: 800; letter-spacing: -.03em; font-size: clamp(30px, 6vw, 56px); line-height: 1.02; margin: 0 0 14px; text-wrap: balance; }
-  .lede { font-family: var(--mono); font-size: 14px; color: var(--soft); max-width: 560px; line-height: 1.6; margin: 0 0 clamp(34px, 6vw, 52px); }
-  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 22px; }
-  .opt { display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: 20px; overflow: hidden; background: #fff; transition: transform .2s, box-shadow .25s; }
-  .opt:hover { transform: translateY(-6px); box-shadow: 0 22px 44px -22px rgba(0,0,0,.3); }
-  .opt .preview { height: 190px; position: relative; overflow: hidden; }
-  .opt.a .preview { background: radial-gradient(120% 120% at 30% 0%, #FFE3C2, #FBF7EE); }
-  .opt.b .preview { background: #0B0B11; background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,.07) 1px, transparent 0); background-size: 16px 16px; }
-  .opt .preview .glyph { position: absolute; inset: 0; display: grid; place-items: center; font-family: var(--mono); font-weight: 700; font-size: 13px; letter-spacing: .1em; text-transform: uppercase; }
-  .opt.a .glyph { color: #FF6B3D; }
-  .opt.b .glyph { color: #18C2E8; }
-  .dots { position: absolute; bottom: 14px; left: 16px; display: flex; gap: 6px; }
-  .dots i { width: 13px; height: 13px; border-radius: 4px; display: block; }
-  .opt .body { padding: 22px 22px 24px; }
-  .opt .body h2 { font-size: 22px; margin: 0 0 8px; letter-spacing: -.01em; }
-  .opt .body p { font-family: var(--mono); font-size: 12.5px; color: var(--soft); line-height: 1.55; margin: 0 0 18px; }
-  .go { font-family: var(--mono); font-size: 13px; font-weight: 700; display: inline-flex; align-items: center; gap: 8px; }
-  .opt.a .go { color: #FF6B3D; }
-  .opt.b .go { color: #1390ac; }
-  .foot { font-family: var(--mono); font-size: 12px; color: var(--soft); margin-top: 40px; text-align: center; }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: var(--body);
+    background: var(--bg);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
   a { color: inherit; text-decoration: none; }
+
+  /* ---------- NAV ---------- */
+  .nav {
+    position: sticky; top: 0; z-index: 50;
+    display: flex; align-items: center; gap: 18px;
+    padding: 16px clamp(18px, 5vw, 64px);
+    background: color-mix(in srgb, var(--bg) 82%, transparent);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid transparent;
+    transition: border-color .3s, background .3s;
+  }
+  .nav.scrolled { border-bottom-color: var(--line); }
+  .brand { display: flex; align-items: center; gap: 11px; font-family: var(--display); font-weight: 800; font-size: 21px; letter-spacing: -.02em; }
+  .brand-mark { width: 30px; height: 30px; position: relative; flex: none; }
+  .brand-mark .orbit { position: absolute; inset: 0; border: 2px solid var(--ink); border-radius: 50%; }
+  .brand-mark .sun { position: absolute; top: 50%; left: 50%; width: 9px; height: 9px; margin: -4.5px; border-radius: 50%; background: var(--accent); }
+  .brand-mark .moon { position: absolute; top: 50%; left: 50%; width: 6px; height: 6px; margin: -3px; border-radius: 50%; background: #2E8BFF; transform-origin: -7px center; animation: orbit 4.5s linear infinite; }
+  @keyframes orbit { to { transform: rotate(360deg); } }
+  .brand b { color: var(--accent); }
+  .nav-spacer { flex: 1; }
+  .nav-links { display: flex; align-items: center; gap: 6px; }
+  .nav-links a { font-size: 14.5px; color: var(--ink-soft); padding: 8px 12px; border-radius: 10px; transition: color .2s, background .2s; }
+  .nav-links a:hover { color: var(--ink); background: var(--bg-2); }
+  .langbtn {
+    font-family: var(--mono); font-size: 12.5px; font-weight: 700;
+    border: 1.5px solid var(--ink); background: transparent; color: var(--ink);
+    padding: 7px 11px; border-radius: 999px; cursor: pointer; transition: all .2s;
+  }
+  .langbtn:hover { background: var(--ink); color: var(--bg); }
+  .gh { display: inline-grid; place-items: center; width: 38px; height: 38px; border-radius: 999px; border: 1.5px solid var(--line); transition: all .2s; }
+  .gh:hover { border-color: var(--ink); transform: rotate(-8deg); }
+  .gh svg { width: 18px; height: 18px; }
+
+  /* ---------- HERO ---------- */
+  .hero { position: relative; padding: clamp(56px, 9vw, 120px) clamp(18px, 5vw, 64px) clamp(40px, 6vw, 80px); overflow: hidden; }
+  #hero-canvas { position: absolute; inset: -10% -5% auto -5%; width: 110%; height: 130%; opacity: .55; pointer-events: none; z-index: 0; }
+  .hero-blob { position: absolute; border-radius: 50%; filter: blur(50px); opacity: .4; z-index: 0; pointer-events: none; }
+  .hero-inner { position: relative; z-index: 2; max-width: 980px; }
+  .kicker {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--mono); font-size: 12.5px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
+    color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, var(--bg));
+    padding: 7px 14px; border-radius: 999px; margin-bottom: 26px;
+  }
+  .kicker .pulse { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); animation: pulse 1.6s ease-in-out infinite; }
+  @keyframes pulse { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: .4; transform: scale(.7); } }
+  .hero h1 {
+    font-family: var(--display); font-weight: 800; letter-spacing: -.03em; line-height: .98;
+    font-size: clamp(42px, 8vw, 92px); margin: 0 0 24px; text-wrap: balance;
+  }
+  .hero h1 .hl { position: relative; white-space: nowrap; }
+  .hero h1 .hl::after { content: ""; position: absolute; left: -2px; right: -2px; bottom: .08em; height: .34em; background: color-mix(in srgb, var(--accent) 38%, transparent); border-radius: 4px; z-index: -1; transform: rotate(-1deg); }
+  .hero p.lede { font-size: clamp(17px, 2.2vw, 22px); line-height: 1.5; color: var(--ink-soft); max-width: 620px; margin: 0 0 36px; font-weight: 300; }
+  .cta-row { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: var(--display); font-weight: 700; font-size: 16px;
+    padding: 15px 26px; border-radius: 999px; cursor: pointer; border: 0; transition: transform .15s, box-shadow .2s;
+  }
+  .btn-primary { background: var(--ink); color: var(--bg); box-shadow: 0 8px 0 0 color-mix(in srgb, var(--accent) 70%, var(--ink)); }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 0 0 color-mix(in srgb, var(--accent) 70%, var(--ink)); }
+  .btn-primary:active { transform: translateY(4px); box-shadow: 0 2px 0 0 color-mix(in srgb, var(--accent) 70%, var(--ink)); }
+  .btn-ghost { background: transparent; color: var(--ink); border: 1.5px solid var(--line); }
+  .btn-ghost:hover { border-color: var(--ink); transform: translateY(-2px); }
+
+  /* ---------- MISSION STRIP ---------- */
+  .mission { padding: 8px clamp(18px, 5vw, 64px) 6px; }
+  .mission-inner {
+    border-top: 1px dashed var(--line); border-bottom: 1px dashed var(--line);
+    padding: 26px 0; display: flex; flex-wrap: wrap; gap: 14px 40px; align-items: baseline;
+  }
+  .mission-inner .big { font-family: var(--display); font-weight: 700; font-size: clamp(18px, 2.4vw, 24px); letter-spacing: -.01em; max-width: 720px; }
+  .mission-inner .tag { font-family: var(--mono); font-size: 12px; color: var(--ink-soft); }
+
+  /* ---------- GALLERY ---------- */
+  .gallery-wrap { padding: clamp(44px, 6vw, 80px) clamp(18px, 5vw, 64px) 40px; }
+  .gh-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 18px; margin-bottom: 28px; }
+  .gh-head h2 { font-family: var(--display); font-weight: 800; font-size: clamp(26px, 4vw, 40px); letter-spacing: -.02em; margin: 0; }
+  .gh-head .sub { color: var(--ink-soft); font-size: 15px; }
+  .filters { display: flex; flex-wrap: wrap; gap: 9px; margin-bottom: 30px; }
+  .chip {
+    font-family: var(--mono); font-size: 13px; font-weight: 700;
+    padding: 9px 16px; border-radius: 999px; cursor: pointer;
+    border: 1.5px solid var(--line); background: var(--card); color: var(--ink-soft);
+    transition: all .18s;
+  }
+  .chip:hover { border-color: var(--ink); color: var(--ink); }
+  .chip.active { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 22px; }
+  .card {
+    display: flex; flex-direction: column; background: var(--card);
+    border: 1px solid var(--line); border-radius: var(--r); overflow: hidden;
+    transition: transform .22s cubic-bezier(.2,.9,.3,1.2), box-shadow .22s, border-color .22s;
+    position: relative;
+  }
+  .card.is-hidden { display: none; }
+  .card:hover { transform: translateY(-7px); border-color: color-mix(in srgb, var(--c) 55%, var(--line)); box-shadow: 0 18px 38px -16px color-mix(in srgb, var(--c) 60%, transparent); }
+  .thumb {
+    position: relative; aspect-ratio: 16 / 9;
+    background:
+      radial-gradient(120% 120% at 50% 0%, color-mix(in srgb, var(--c) 16%, #fff) 0%, color-mix(in srgb, var(--c) 6%, #fff) 70%);
+    border-bottom: 1px solid color-mix(in srgb, var(--c) 18%, var(--line));
+    transition: background .25s;
+  }
+  .card:hover .thumb { background: radial-gradient(120% 120% at 50% 0%, color-mix(in srgb, var(--c) 26%, #fff) 0%, color-mix(in srgb, var(--c) 10%, #fff) 70%); }
+  .thumb canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .thumb .num { position: absolute; top: 10px; right: 12px; font-family: var(--mono); font-size: 11px; font-weight: 700; color: color-mix(in srgb, var(--c) 75%, var(--ink)); opacity: .7; }
+  .cbody { padding: 18px 20px 20px; display: flex; flex-direction: column; flex: 1; }
+  .ctop { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
+  .formula { font-family: var(--mono); font-size: 12px; font-weight: 700; color: var(--c); background: color-mix(in srgb, var(--c) 11%, #fff); padding: 4px 9px; border-radius: 7px; white-space: nowrap; }
+  .level { font-size: 10px; letter-spacing: 1px; color: var(--c); }
+  .ctitle { font-family: var(--display); font-weight: 700; font-size: 20px; letter-spacing: -.01em; margin: 0 0 7px; }
+  .cdesc { font-size: 14px; line-height: 1.5; color: var(--ink-soft); margin: 0 0 16px; font-weight: 300; flex: 1; }
+  .copen { display: inline-flex; align-items: center; gap: 7px; font-family: var(--mono); font-size: 12.5px; font-weight: 700; color: var(--ink); }
+  .copen-arr { transition: transform .2s; color: var(--c); }
+  .card:hover .copen-arr { transform: translateX(5px); }
+
+  /* ---------- FOOTER ---------- */
+  footer { padding: 48px clamp(18px, 5vw, 64px) 56px; border-top: 1px dashed var(--line); margin-top: 30px; }
+  .foot-inner { display: flex; flex-wrap: wrap; gap: 20px; align-items: center; justify-content: space-between; }
+  .foot-inner .fnote { font-size: 13.5px; color: var(--ink-soft); }
+  .foot-inner .fnote b { color: var(--accent); }
+  .swatches { display: flex; gap: 6px; }
+  .swatches i { width: 14px; height: 14px; border-radius: 4px; display: block; }
+
+  /* ---------- TOAST ---------- */
+  .toast {
+    position: fixed; left: 50%; bottom: 28px; transform: translate(-50%, 20px);
+    background: var(--ink); color: var(--bg); font-family: var(--mono); font-size: 13px; font-weight: 700;
+    padding: 13px 20px; border-radius: 999px; z-index: 100; opacity: 0; pointer-events: none;
+    transition: opacity .25s, transform .25s; box-shadow: 0 14px 30px -10px rgba(0,0,0,.4);
+  }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+  @media (max-width: 640px) {
+    .nav-links a:not(.gh) { display: none; }
+  }
 </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="top">
-      <span class="brand">antsa<b>math</b></span>
-      <span class="badge">page de choix · temporaire</span>
-    </div>
-    <h1>Deux directions visuelles.</h1>
-    <p class="lede">Même contenu, deux ambiances. Ouvre les deux, compare, et dis-moi laquelle devient la page d’accueil officielle. <br/>// Same content, two moods — open both and pick your favourite.</p>
-
-    <div class="cards">
-      <a class="opt a" href="playground.html">
-        <div class="preview">
-          <span class="glyph">Direction A</span>
-          <span class="dots"><i style="background:#7C5CFF"></i><i style="background:#2E8BFF"></i><i style="background:#FF9F1C"></i><i style="background:#FF5DA2"></i></span>
-        </div>
-        <div class="body">
-          <h2>Playground</h2>
-          <p>Crème chaleureux, cartes arrondies, couleurs vives et joyeuses. Amical, ludique, accessible.</p>
-          <span class="go">Ouvrir A →</span>
-        </div>
+  <nav class="nav" id="nav">
+    <a href="#" class="brand">
+      <span class="brand-mark"><span class="orbit"></span><span class="sun"></span><span class="moon"></span></span>
+      antsa<b>math</b>
+    </a>
+    <span class="nav-spacer"></span>
+    <div class="nav-links">
+      <a href="#galerie" data-fr="La galerie" data-en="The gallery">La galerie</a>
+      <a href="#mission" data-fr="Le projet" data-en="The project">Le projet</a>
+      <a class="gh" href="https://github.com" target="_blank" rel="noopener" aria-label="GitHub">
+        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
       </a>
-
-      <a class="opt b" href="lab.html">
-        <div class="preview">
-          <span class="glyph">Direction B</span>
-          <span class="dots"><i style="background:#18C2E8"></i><i style="background:#7C5CFF"></i><i style="background:#FF5DA2"></i><i style="background:#F4C20D"></i></span>
-        </div>
-        <div class="body">
-          <h2>Lab</h2>
-          <p>Fond sombre, néon, grande typo éditoriale. Énergique, type laboratoire / observatoire.</p>
-          <span class="go">Ouvrir B →</span>
-        </div>
-      </a>
+      <button class="langbtn" type="button">EN</button>
     </div>
+  </nav>
 
-    <p class="foot">// quand tu auras choisi, je renomme la direction retenue en index.html pour GitHub Pages</p>
-  </div>
+  <header class="hero">
+    <canvas id="hero-canvas"></canvas>
+    <div class="hero-blob" style="width:340px;height:340px;background:#FF9F1C;top:-60px;right:8%;"></div>
+    <div class="hero-blob" style="width:300px;height:300px;background:#2E8BFF;bottom:-120px;left:-40px;"></div>
+    <div class="hero-inner">
+      <span class="kicker"><span class="pulse"></span><span data-fr="Maths interactives · open source" data-en="Interactive maths · open source">Maths interactives · open source</span></span>
+      <h1 data-html="1" data-fr="Les maths, ça se &lt;span class='hl'&gt;manipule&lt;/span&gt;." data-en="Maths you can &lt;span class='hl'&gt;play with&lt;/span&gt;.">Les maths, ça se <span class="hl">manipule</span>.</h1>
+      <p class="lede" data-fr="antsamath rassemble des petites simulations interactives — fractales, courbes, hasard, chaos — pour voir les idées mathématiques prendre vie sous vos doigts." data-en="antsamath gathers tiny interactive simulations — fractals, curves, randomness, chaos — so you can watch mathematical ideas come alive under your fingers.">antsamath rassemble des petites simulations interactives — fractales, courbes, hasard, chaos — pour voir les idées mathématiques prendre vie sous vos doigts.</p>
+      <div class="cta-row">
+        <a href="#galerie" class="btn btn-primary"><span data-fr="Explorer la galerie" data-en="Explore the gallery">Explorer la galerie</span> →</a>
+        <a href="#mission" class="btn btn-ghost" data-fr="C’est quoi le projet ?" data-en="What is this?">C’est quoi le projet ?</a>
+      </div>
+    </div>
+  </header>
+
+  <section class="mission" id="mission">
+    <div class="mission-inner">
+      <div class="big" data-fr="Pas de cours magistral. On bouge un curseur, on relance le hasard, on zoome — et la règle mathématique apparaît toute seule." data-en="No lecture. Move a slider, reroll the randomness, zoom in — and the maths rule reveals itself.">Pas de cours magistral. On bouge un curseur, on relance le hasard, on zoome — et la règle mathématique apparaît toute seule.</div>
+      <div class="tag" data-fr="// fait pour la curiosité, de 7 à 77 ans" data-en="// built for the curious, ages 7 to 77">// fait pour la curiosité, de 7 à 77 ans</div>
+    </div>
+  </section>
+
+  <main class="gallery-wrap" id="galerie">
+    <div class="gh-head">
+      <div>
+        <h2 data-fr="La galerie" data-en="The gallery">La galerie</h2>
+        <div class="sub" data-fr="Douze terrains de jeu mathématiques. Choisis un thème, ou pioche au hasard." data-en="Twelve mathematical playgrounds. Pick a theme, or dive in at random.">Douze terrains de jeu mathématiques. Choisis un thème, ou pioche au hasard.</div>
+      </div>
+    </div>
+    <div class="filters" id="filters"></div>
+    <div class="grid" id="gallery"></div>
+  </main>
+
+  <footer>
+    <div class="foot-inner">
+      <div class="fnote"><b>antsamath</b> · <span data-fr="conçu avec curiosité · hébergé sur GitHub Pages" data-en="made with curiosity · hosted on GitHub Pages">conçu avec curiosité · hébergé sur GitHub Pages</span></div>
+      <div class="swatches" aria-hidden="true">
+        <i style="background:#7C5CFF"></i><i style="background:#2E8BFF"></i><i style="background:#FF9F1C"></i><i style="background:#2EC4A6"></i><i style="background:#FF5DA2"></i><i style="background:#FF5247"></i>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/sketches.js"></script>
+  <script src="assets/modules.js"></script>
+  <script src="assets/app.js"></script>
+  <script>
+    initPage({ sketch: "heroLissajous", colors: ["#FF6B3D", "#2E8BFF", "#FF9F1C", "#7C5CFF", "#2EC4A6"], fps: 60 });
+    const nav = document.getElementById("nav");
+    const onScroll = () => nav.classList.toggle("scrolled", window.scrollY > 8);
+    window.addEventListener("scroll", onScroll, { passive: true }); onScroll();
+  </script>
 </body>
 </html>
