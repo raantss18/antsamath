@@ -95,11 +95,11 @@
         <h3><span class="ic">⚙</span><span data-fr="Paramètres" data-en="Parameters">Paramètres</span></h3>
         <div class="ctrl">
           <label><span data-fr="Population" data-en="Population">Population</span><span class="val" id="v-n">220</span></label>
-          <input type="range" id="s-n" min="60" max="320" step="10" value="220" />
+          <input type="range" id="s-n" min="60" max="10000" step="10" value="220" />
         </div>
         <div class="ctrl">
           <label><span data-fr="Contagiosité β" data-en="Contagiousness β">Contagiosité β</span><span class="val" id="v-beta">0.30</span></label>
-          <input type="range" id="s-beta" min="0.05" max="0.6" step="0.01" value="0.3" />
+          <input type="range" id="s-beta" min="0" max="1" step="0.01" value="0.3" />
         </div>
         <div class="ctrl">
           <label><span data-fr="Guérison γ" data-en="Recovery γ">Guérison γ</span><span class="val" id="v-gamma">0.030</span></label>
@@ -108,7 +108,7 @@
         <!-- SIRS uniquement -->
         <div class="ctrl" id="row-xi" style="display:none">
           <label><span data-fr="Perte d'immunité ξ" data-en="Immunity loss ξ">Perte d'immunité ξ</span><span class="val" id="v-xi">0.010</span></label>
-          <input type="range" id="s-xi" min="0.002" max="0.05" step="0.002" value="0.01" />
+          <input type="range" id="s-xi" min="0.002" max="0.5" step="0.002" value="0.01" />
         </div>
         <!-- SEIR uniquement -->
         <div class="ctrl" id="row-sigma" style="display:none">
@@ -118,7 +118,7 @@
         <!-- Mortalité (tous) -->
         <div class="ctrl">
           <label><span data-fr="Mortalité μ" data-en="Mortality μ">Mortalité μ</span><span class="val" id="v-mu">0%</span></label>
-          <input type="range" id="s-mu" min="0" max="0.1" step="0.005" value="0" />
+          <input type="range" id="s-mu" min="0" max="1" step="0.005" value="0" />
         </div>
         <div class="ctrl">
           <label><span data-fr="Mobilité" data-en="Mobility">Mobilité</span><span class="val" id="v-mob">60%</span></label>
@@ -130,7 +130,7 @@
         </div>
         <div class="ctrl">
           <label><span data-fr="Vitesse de simulation" data-en="Simulation speed">Vitesse de simulation</span><span class="val" id="v-speed">1×</span></label>
-          <input type="range" id="s-speed" min="0" max="8" step="1" value="1" />
+          <input type="range" id="s-speed" min="0" max="8" step="0.1" value="1" />
         </div>
       </div>
 
