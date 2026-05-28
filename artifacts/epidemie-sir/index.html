@@ -13,14 +13,26 @@
 <style>
   body { --accent: #D32C6D; }
   html[data-theme="dark"] body { --accent: #FF6FA3; }
+
+  .mode-row { display:flex; gap:6px; margin-bottom:16px; }
+  .mode-btn {
+    flex:1; padding:7px 4px;
+    border-radius:8px; border:1.5px solid var(--border,#ddd);
+    background:transparent; color:var(--fg,#222);
+    font-family:inherit; font-size:0.78rem; font-weight:600;
+    cursor:pointer; transition:background .15s,border-color .15s,color .15s;
+    line-height:1.2;
+  }
+  .mode-btn:hover { border-color:var(--accent); color:var(--accent); }
+  .mode-btn.active { background:var(--accent); border-color:var(--accent); color:#fff; }
 </style>
 </head>
 <body>
   <header class="art-nav">
     <a class="back" href="../../index.html">← <span data-fr="Accueil" data-en="Home">Accueil</span></a>
     <div class="art-head">
-      <div class="tag" data-fr="Dynamique · Modèle SIR" data-en="Dynamics · SIR model">Dynamique · Modèle SIR</div>
-      <h1 data-fr="Propagation d’une épidémie" data-en="Spread of an epidemic">Propagation d’une épidémie</h1>
+      <div class="tag" data-fr="Dynamique · Modèles épidémiques" data-en="Dynamics · Epidemic models">Dynamique · Modèles épidémiques</div>
+      <h1 data-fr="Propagation d'une épidémie" data-en="Spread of an epidemic">Propagation d'une épidémie</h1>
     </div>
     <div class="art-tools">
       <button class="themebtn" type="button"></button>
@@ -33,34 +45,54 @@
       <div class="stage">
         <canvas id="cv"></canvas>
         <div class="readouts">
-          <span class="pill" style="--accent:#4F8DF7">S <b id="r-s" style="color:#4F8DF7">0</b></span>
+          <span class="pill" style="--pill-accent:#4F8DF7">S <b id="r-s" style="color:#4F8DF7">0</b></span>
+          <span class="pill" id="pill-e" style="display:none;--pill-accent:#F5A623">E <b id="r-e" style="color:#F5A623">0</b></span>
           <span class="pill">I <b id="r-i">0</b></span>
-          <span class="pill" style="--accent:#7E8898">R <b id="r-r" style="color:#7E8898">0</b></span>
+          <span class="pill" style="--pill-accent:#7E8898">R <b id="r-r" style="color:#7E8898">0</b></span>
+          <span class="pill" id="pill-d" style="display:none;--pill-accent:#555">D <b id="r-d" style="color:#555">0</b></span>
+          <span class="pill"><span data-fr="Jour" data-en="Day">Jour</span> <b id="r-day">0</b></span>
+          <span class="pill">dI/dt <b id="r-didt">0</b></span>
         </div>
-        <div class="legend">
-          <span><i style="background:#4F8DF7"></i><span data-fr="Sains (S)" data-en="Susceptible (S)">Sains (S)</span></span>
-          <span><i style="background:#D32C6D"></i><span data-fr="Infectés (I)" data-en="Infected (I)">Infectés (I)</span></span>
-          <span><i style="background:#7E8898"></i><span data-fr="Guéris (R)" data-en="Recovered (R)">Guéris (R)</span></span>
-        </div>
+        <div class="legend" id="legend"></div>
       </div>
     </div>
 
     <aside class="panel">
-      <div class="block">
-        <h3><span class="ic">📈</span><span data-fr="Courbe S · I · R" data-en="S · I · R curve">Courbe S · I · R</span></h3>
-        <canvas id="chart" style="width:100%;height:150px;display:block"></canvas>
-      </div>
 
+      <!-- Sélecteur de modèle -->
       <div class="block">
-        <h3><span class="ic">▶</span><span data-fr="Commandes" data-en="Controls">Commandes</span></h3>
+        <h3><span class="ic">⊙</span><span data-fr="Modèle épidémique" data-en="Epidemic model">Modèle épidémique</span></h3>
+        <div class="mode-row">
+          <button class="mode-btn active" data-mode="SIR">SIR</button>
+          <button class="mode-btn" data-mode="SIRS">SIRS</button>
+          <button class="mode-btn" data-mode="SEIR">SEIR</button>
+        </div>
         <div class="btnrow">
           <button class="mini primary" id="btn-play" data-fr="Pause" data-en="Pause">Pause</button>
           <button class="mini ghost" id="btn-reset" data-fr="Nouvelle épidémie" data-en="New outbreak">Nouvelle épidémie</button>
         </div>
       </div>
 
+      <!-- Courbe -->
       <div class="block">
-        <h3><span class="ic">⚙</span><span data-fr="Les paramètres" data-en="Parameters">Les paramètres</span></h3>
+        <h3><span class="ic">📈</span><span data-fr="Courbe temporelle" data-en="Time curve">Courbe temporelle</span></h3>
+        <canvas id="chart" style="width:100%;height:150px;display:block"></canvas>
+      </div>
+
+      <!-- Indicateurs -->
+      <div class="block">
+        <h3><span class="ic">∑</span><span data-fr="Indicateurs" data-en="Indicators">Indicateurs</span></h3>
+        <div class="kv">
+          <span class="k">R₀ = β ⁄ γ</span><span class="v hot" id="r-r0">—</span>
+          <span class="k" data-fr="Seuil d'immunité" data-en="Herd-immunity threshold">Seuil d'immunité</span><span class="v" id="r-thr">—</span>
+          <span class="k" data-fr="Pic d'infectés" data-en="Infection peak">Pic d'infectés</span><span class="v" id="r-peak">0</span>
+          <span class="k" data-fr="Touchés au total" data-en="Total affected">Touchés au total</span><span class="v" id="r-tot">0%</span>
+        </div>
+      </div>
+
+      <!-- Paramètres -->
+      <div class="block">
+        <h3><span class="ic">⚙</span><span data-fr="Paramètres" data-en="Parameters">Paramètres</span></h3>
         <div class="ctrl">
           <label><span data-fr="Population" data-en="Population">Population</span><span class="val" id="v-n">220</span></label>
           <input type="range" id="s-n" min="60" max="320" step="10" value="220" />
@@ -73,6 +105,21 @@
           <label><span data-fr="Guérison γ" data-en="Recovery γ">Guérison γ</span><span class="val" id="v-gamma">0.030</span></label>
           <input type="range" id="s-gamma" min="0.008" max="0.12" step="0.002" value="0.03" />
         </div>
+        <!-- SIRS uniquement -->
+        <div class="ctrl" id="row-xi" style="display:none">
+          <label><span data-fr="Perte d'immunité ξ" data-en="Immunity loss ξ">Perte d'immunité ξ</span><span class="val" id="v-xi">0.010</span></label>
+          <input type="range" id="s-xi" min="0.002" max="0.05" step="0.002" value="0.01" />
+        </div>
+        <!-- SEIR uniquement -->
+        <div class="ctrl" id="row-sigma" style="display:none">
+          <label><span data-fr="Incubation σ" data-en="Incubation σ">Incubation σ</span><span class="val" id="v-sigma">0.20</span></label>
+          <input type="range" id="s-sigma" min="0.05" max="0.5" step="0.01" value="0.2" />
+        </div>
+        <!-- Mortalité (tous) -->
+        <div class="ctrl">
+          <label><span data-fr="Mortalité μ" data-en="Mortality μ">Mortalité μ</span><span class="val" id="v-mu">0%</span></label>
+          <input type="range" id="s-mu" min="0" max="0.1" step="0.005" value="0" />
+        </div>
         <div class="ctrl">
           <label><span data-fr="Mobilité" data-en="Mobility">Mobilité</span><span class="val" id="v-mob">60%</span></label>
           <input type="range" id="s-mob" min="0" max="100" step="5" value="60" />
@@ -81,26 +128,39 @@
           <label><span data-fr="Vaccinés au départ" data-en="Vaccinated at start">Vaccinés au départ</span><span class="val" id="v-vax">0%</span></label>
           <input type="range" id="s-vax" min="0" max="90" step="1" value="0" />
         </div>
-      </div>
-
-      <div class="block">
-        <h3><span class="ic">∑</span><span data-fr="Indicateurs" data-en="Indicators">Indicateurs</span></h3>
-        <div class="kv">
-          <span class="k">R₀ = β ⁄ γ</span><span class="v hot" id="r-r0">—</span>
-          <span class="k" data-fr="Seuil d’immunité" data-en="Herd-immunity threshold">Seuil d’immunité</span><span class="v" id="r-thr">—</span>
-          <span class="k" data-fr="Pic d’infectés" data-en="Infection peak">Pic d’infectés</span><span class="v" id="r-peak">0</span>
-          <span class="k" data-fr="Touchés au total" data-en="Total affected">Touchés au total</span><span class="v" id="r-tot">0%</span>
+        <div class="ctrl">
+          <label><span data-fr="Vitesse de simulation" data-en="Simulation speed">Vitesse de simulation</span><span class="val" id="v-speed">1×</span></label>
+          <input type="range" id="s-speed" min="1" max="8" step="1" value="1" />
         </div>
       </div>
 
-      <div class="block lesson">
+      <!-- Théorie SIR -->
+      <div class="block lesson" id="theory-SIR">
         <h3><span class="ic">𝑓</span><span data-fr="La notion" data-en="The idea">La notion</span></h3>
-        <p data-fr="Le <strong>modèle SIR</strong> répartit la population en trois compartiments : <strong>S</strong>ains (sensibles), <strong>I</strong>nfectés, <strong>R</strong>etirés (guéris/immunisés). Les gens passent de S → I → R." data-en="The <strong>SIR model</strong> splits the population into three compartments: <strong>S</strong>usceptible, <strong>I</strong>nfected, <strong>R</strong>emoved (recovered/immune). People move S → I → R." data-html="1"></p>
+        <p data-fr="Le <strong>modèle SIR</strong> répartit la population en trois compartiments : <strong>S</strong>ains, <strong>I</strong>nfectés, <strong>R</strong>etirés (guéris/immunisés). Les individus passent S → I → R sans retour possible." data-en="The <strong>SIR model</strong> splits the population into three compartments: <strong>S</strong>usceptible, <strong>I</strong>nfected, <strong>R</strong>emoved (recovered/immune). Individuals move S → I → R with no way back." data-html="1"></p>
         <div class="fbox">dS⁄dt = −β·S·I⁄N<br>dI⁄dt = β·S·I⁄N − γ·I<br>dR⁄dt = γ·I</div>
-        <p data-fr="Le nombre clé est <strong>R₀ = β ⁄ γ</strong> : le nombre moyen de personnes qu’un malade contamine. Si <strong>R₀ &gt; 1</strong>, l’épidémie explose ; si <strong>R₀ &lt; 1</strong>, elle s’éteint." data-en="The key number is <strong>R₀ = β ⁄ γ</strong>: the average number of people one sick person infects. If <strong>R₀ &gt; 1</strong>, the epidemic explodes; if <strong>R₀ &lt; 1</strong>, it dies out." data-html="1"></p>
-        <div class="fbox"><span data-fr="Seuil d’immunité collective" data-en="Herd-immunity threshold">Seuil d’immunité collective</span> = 1 − 1⁄R₀</div>
-        <p class="tip" data-fr="<b>Essaie :</b> monte la vaccination au-dessus du seuil affiché — l’épidémie n’arrive plus à démarrer. C’est l’<strong>immunité collective</strong>. Baisse β pour « aplatir la courbe »." data-en="<b>Try it:</b> raise vaccination above the shown threshold — the epidemic can no longer take off. That’s <strong>herd immunity</strong>. Lower β to “flatten the curve.”" data-html="1"></p>
+        <p data-fr="Le nombre clé est <strong>R₀ = β ⁄ γ</strong> : si <strong>R₀ &gt; 1</strong>, l'épidémie explose ; si <strong>R₀ &lt; 1</strong>, elle s'éteint naturellement." data-en="The key number is <strong>R₀ = β ⁄ γ</strong>: if <strong>R₀ &gt; 1</strong>, the epidemic explodes; if <strong>R₀ &lt; 1</strong>, it dies out." data-html="1"></p>
+        <p class="tip" data-fr="<b>Essaie :</b> monte la vaccination au-dessus du seuil affiché — c'est l'<strong>immunité collective</strong>. Baisse β pour « aplatir la courbe »." data-en="<b>Try it:</b> raise vaccination above the threshold shown — that's <strong>herd immunity</strong>. Lower β to 'flatten the curve'." data-html="1"></p>
       </div>
+
+      <!-- Théorie SIRS -->
+      <div class="block lesson" id="theory-SIRS" style="display:none">
+        <h3><span class="ic">𝑓</span><span data-fr="La notion" data-en="The idea">La notion</span></h3>
+        <p data-fr="Le <strong>modèle SIRS</strong> ajoute une perte d'immunité : les guéris (R) redeviennent susceptibles (S) à taux ξ. L'épidémie peut alors persister <strong>de manière endémique</strong> ou produire des vagues successives." data-en="The <strong>SIRS model</strong> adds waning immunity: recovered individuals (R) return to susceptible (S) at rate ξ. The epidemic can then persist <strong>endemically</strong> or produce successive waves." data-html="1"></p>
+        <div class="fbox">dS⁄dt = −β·S·I⁄N + ξ·R<br>dI⁄dt = β·S·I⁄N − γ·I<br>dR⁄dt = γ·I − ξ·R</div>
+        <p data-fr="Contrairement au SIR, le SIRS peut admettre un <strong>équilibre endémique</strong> non nul : l'épidémie ne disparaît pas mais s'installe durablement dans la population." data-en="Unlike SIR, the SIRS model can admit a non-zero <strong>endemic equilibrium</strong>: the epidemic doesn't vanish but settles persistently in the population." data-html="1"></p>
+        <p class="tip" data-fr="<b>Essaie :</b> augmente ξ — les vagues se succèdent plus vite. Avec un fort ξ et un fort β, la maladie devient <strong>endémique</strong> (comme la grippe saisonnière)." data-en="<b>Try it:</b> increase ξ — waves arrive faster. With high ξ and high β, the disease becomes <strong>endemic</strong> (like seasonal flu)." data-html="1"></p>
+      </div>
+
+      <!-- Théorie SEIR -->
+      <div class="block lesson" id="theory-SEIR" style="display:none">
+        <h3><span class="ic">𝑓</span><span data-fr="La notion" data-en="The idea">La notion</span></h3>
+        <p data-fr="Le <strong>modèle SEIR</strong> ajoute un compartiment <strong>E</strong>xposé : les individus infectés passent d'abord par une <strong>période d'incubation</strong> avant de devenir contagieux. σ est le taux de passage E → I." data-en="The <strong>SEIR model</strong> adds an <strong>E</strong>xposed compartment: infected individuals first go through an <strong>incubation period</strong> before becoming contagious. σ is the rate of transition E → I." data-html="1"></p>
+        <div class="fbox">dS⁄dt = −β·S·I⁄N<br>dE⁄dt = β·S·I⁄N − σ·E<br>dI⁄dt = σ·E − γ·I<br>dR⁄dt = γ·I</div>
+        <p data-fr="L'incubation <strong>retarde</strong> le pic épidémique et le <strong>lisse</strong>. Ce modèle est plus réaliste pour des maladies comme la COVID-19 ou la rougeole (incubation de plusieurs jours)." data-en="Incubation <strong>delays</strong> and <strong>smooths</strong> the epidemic peak. This model is more realistic for diseases like COVID-19 or measles (incubation of several days)." data-html="1"></p>
+        <p class="tip" data-fr="<b>Essaie :</b> baisse σ (longue incubation) — le pic arrive bien plus tard et les porteurs invisibles (E) s'accumulent. Monte σ pour retrouver un comportement proche du SIR." data-en="<b>Try it:</b> lower σ (long incubation) — the peak arrives much later and invisible carriers (E) accumulate. Raise σ to recover SIR-like behaviour." data-html="1"></p>
+      </div>
+
     </aside>
   </main>
 
