@@ -33,65 +33,59 @@
       <div class="stage">
         <canvas id="cv"></canvas>
         <div class="readouts">
-          <span class="pill" data-fr="points n :" data-en="points n:">points n :</span><span class="pill"><b id="r-n">0</b></span>
-          <span class="pill" data-fr="dedans k :" data-en="inside k:">dedans k :</span><span class="pill"><b id="r-k">0</b></span>
+          <span class="pill" data-fr="points n" data-en="points n">points n</span><span class="pill"><b id="r-n">0</b></span>
+          <span class="pill" data-fr="dedans k" data-en="inside k">dedans k</span><span class="pill"><b id="r-k">0</b></span>
         </div>
         <div class="legend">
-          <span><i style="background:#E8890C"></i><span data-fr="dans la forme" data-en="inside shape">dans la forme</span></span>
+          <span><i id="lg-in"></i><span data-fr="dans la forme" data-en="inside shape">dans la forme</span></span>
           <span><i style="background:#9aa0ad"></i><span data-fr="dehors" data-en="outside">dehors</span></span>
         </div>
       </div>
     </div>
 
     <aside class="panel">
+      <div class="block" id="sim-controls"></div>
+
       <div class="block">
-        <h3><span class="ic">◆</span><span data-fr="La forme" data-en="The shape">La forme</span></h3>
-        <div class="seg" id="shapes">
+        <h3><span class="ic">◆</span><span data-fr="La forme à mesurer" data-en="The shape to measure">La forme à mesurer</span></h3>
+        <div class="seg" id="shapes" data-tip-fr="Choisis la forme dont on estime l’aire. Le carré qui l’entoure a toujours une aire connue de 4 (côté 2)." data-tip-en="Pick the shape whose area we estimate. The surrounding square always has a known area of 4 (side 2).">
           <button data-shape="disque" class="on" data-fr="Disque" data-en="Disk">Disque</button>
           <button data-shape="ellipse" data-fr="Ellipse" data-en="Ellipse">Ellipse</button>
           <button data-shape="astroide" data-fr="Astroïde" data-en="Astroid">Astroïde</button>
           <button data-shape="losange" data-fr="Losange" data-en="Diamond">Losange</button>
         </div>
 
-        <div class="ctrl" id="c-r" style="margin-top:16px">
+        <div class="ctrl" id="c-r" style="margin-top:16px" data-tip-fr="Rayon du disque, dans les unités du repère (0 à 1). L’aire exacte vaut π·r²." data-tip-en="Disk radius, in the grid units (0 to 1). The exact area is π·r².">
           <label><span data-fr="Rayon r" data-en="Radius r">Rayon r</span><span class="val" id="v-r">0.80</span></label>
           <input type="range" id="s-r" min="0.3" max="1" step="0.02" value="0.8" />
         </div>
-        <div class="ctrl" id="c-a" style="display:none">
+        <div class="ctrl" id="c-a" style="display:none" data-tip-fr="Demi-axe horizontal de l’ellipse. L’aire exacte vaut π·a·b." data-tip-en="Horizontal semi-axis of the ellipse. The exact area is π·a·b.">
           <label><span data-fr="Demi-axe a" data-en="Semi-axis a">Demi-axe a</span><span class="val" id="v-a">0.90</span></label>
           <input type="range" id="s-a" min="0.3" max="1" step="0.02" value="0.9" />
         </div>
-        <div class="ctrl" id="c-b" style="display:none">
+        <div class="ctrl" id="c-b" style="display:none" data-tip-fr="Demi-axe vertical de l’ellipse. L’aire exacte vaut π·a·b." data-tip-en="Vertical semi-axis of the ellipse. The exact area is π·a·b.">
           <label><span data-fr="Demi-axe b" data-en="Semi-axis b">Demi-axe b</span><span class="val" id="v-b">0.55</span></label>
           <input type="range" id="s-b" min="0.3" max="1" step="0.02" value="0.55" />
         </div>
-        <div class="ctrl" id="c-size" style="display:none">
+        <div class="ctrl" id="c-size" style="display:none" data-tip-fr="Taille de la forme (échelle). Modifie l’aire exacte affichée plus bas." data-tip-en="Size of the shape (scale). Changes the exact area shown below.">
           <label><span data-fr="Taille" data-en="Size">Taille</span><span class="val" id="v-size">0.90</span></label>
           <input type="range" id="s-size" min="0.4" max="1" step="0.02" value="0.9" />
         </div>
       </div>
 
       <div class="block">
-        <h3><span class="ic">⚙</span><span data-fr="La simulation" data-en="The simulation">La simulation</span></h3>
-        <div class="ctrl">
-          <label><span data-fr="Nombre de points (max)" data-en="Number of points (max)">Nombre de points (max)</span><span class="val" id="v-n">10 000</span></label>
-          <input type="range" id="s-n" min="500" max="40000" step="500" value="10000" />
-        </div>
-        <div class="ctrl">
-          <label><span data-fr="Vitesse" data-en="Speed">Vitesse</span><span class="val" id="v-speed">120 / image</span></label>
-          <input type="range" id="s-speed" min="10" max="600" step="10" value="120" />
-        </div>
-        <div class="btnrow">
-          <button class="mini primary" id="btn-play" data-fr="Pause" data-en="Pause">Pause</button>
-          <button class="mini ghost" id="btn-reset" data-fr="Relancer" data-en="Restart">Relancer</button>
+        <h3><span class="ic">⚙</span><span data-fr="Réglage du tirage" data-en="Sampling setting">Réglage du tirage</span></h3>
+        <div class="ctrl" data-tip-fr="Le tirage s’arrête à ce nombre de points. Plus il est grand, plus l’estimation est fine : l’erreur typique décroît comme 1⁄√n." data-tip-en="Sampling stops at this many points. The larger it is, the finer the estimate: the typical error shrinks like 1⁄√n.">
+          <label><span data-fr="Points maximum" data-en="Maximum points">Points maximum</span><span class="val" id="v-max">10 000</span></label>
+          <input type="range" id="s-max" min="500" max="40000" step="500" value="10000" />
         </div>
       </div>
 
       <div class="block">
         <h3><span class="ic">∑</span><span data-fr="Résultats en direct" data-en="Live results">Résultats en direct</span></h3>
         <div class="kv">
-          <span class="k" data-fr="Aire du carré (□)" data-en="Square area (□)">Aire du carré (□)</span><span class="v">4.0000</span>
-          <span class="k" data-fr="Estimation" data-en="Estimate">Estimation</span><span class="v hot" id="r-est">—</span>
+          <span class="k" data-fr="Aire du carré" data-en="Square area">Aire du carré</span><span class="v">4.0000</span>
+          <span class="k" data-fr="Estimation 4·k⁄n" data-en="Estimate 4·k⁄n">Estimation 4·k⁄n</span><span class="v hot" id="r-est">—</span>
           <span class="k" data-fr="Valeur exacte" data-en="Exact value">Valeur exacte</span><span class="v" id="r-exact">—</span>
           <span class="k" data-fr="Erreur relative" data-en="Relative error">Erreur relative</span><span class="v" id="r-err">—</span>
         </div>
@@ -99,11 +93,21 @@
 
       <div class="block lesson">
         <h3><span class="ic">𝑓</span><span data-fr="La notion" data-en="The idea">La notion</span></h3>
-        <p data-fr="On enferme la forme dans un carré de côté 2 (aire = 4). On tire des points <strong>au hasard</strong> et uniformément dans ce carré. La proportion de points qui tombent <strong>dans</strong> la forme estime la proportion d’aire occupée." data-en="We trap the shape inside a square of side 2 (area = 4). We draw points <strong>at random</strong>, uniformly, in that square. The fraction of points landing <strong>inside</strong> the shape estimates its fraction of area." data-html="1"></p>
-        <div class="fbox" id="f-generic"><span class="hot">A</span> ≈ A<sub>□</sub> · <span class="hot">k</span> ⁄ <span class="hot">n</span> = 4 · k ⁄ n</div>
-        <p data-fr="C’est la <strong>loi des grands nombres</strong> : plus n est grand, plus l’estimation se rapproche de la vraie aire. L’erreur décroît comme 1⁄√n." data-en="This is the <strong>law of large numbers</strong>: the larger n, the closer the estimate gets to the true area. The error shrinks like 1⁄√n." data-html="1"></p>
-        <div class="fbox" id="f-exact">—</div>
-        <p class="tip" data-fr="<b>Astuce :</b> avec un disque de rayon 1, l’aire vaut π. Monte Carlo devient alors une machine à estimer π !" data-en="<b>Tip:</b> with a disk of radius 1, the area equals π. Monte Carlo then becomes a π-estimating machine!" data-html="1"></p>
+        <div class="step">
+          <span class="lab" data-fr="Intuition" data-en="Intuition">Intuition</span>
+          <div class="body" data-fr="Imagine lancer des fléchettes au hasard sur une cible carrée. La part qui tombe <strong>dans</strong> la forme reflète la part d’aire qu’elle occupe." data-en="Imagine throwing darts at random onto a square target. The fraction landing <strong>inside</strong> the shape reflects the fraction of area it covers." data-html="1"></div>
+        </div>
+        <div class="step">
+          <span class="lab" data-fr="Formule" data-en="Formula">Formule</span>
+          <div class="body" data-fr="Le carré a une aire connue A<sub>□</sub> = 4. Si k points sur n tombent dans la forme :" data-en="The square has known area A<sub>□</sub> = 4. If k of n points land inside the shape:" data-html="1"></div>
+          <div class="fbox"><span class="hot">A</span> ≈ A<sub>□</sub> · k ⁄ n = 4 · <span class="hot">k</span> ⁄ <span class="hot">n</span></div>
+        </div>
+        <div class="step">
+          <span class="lab" data-fr="Détail" data-en="Detail">Détail</span>
+          <div class="body" data-fr="C’est la <strong>loi des grands nombres</strong> : k⁄n converge vers la vraie probabilité (l’aire relative). L’écart-type de l’erreur décroît en 1⁄√n — pour 10× plus de précision, il faut 100× plus de points." data-en="This is the <strong>law of large numbers</strong>: k⁄n converges to the true probability (relative area). The error’s standard deviation shrinks as 1⁄√n — for 10× more precision you need 100× more points." data-html="1"></div>
+          <div class="fbox" id="f-exact">—</div>
+        </div>
+        <p class="tip" data-fr="<b>Essaie :</b> un disque de rayon 1 a une aire de π. Monte Carlo devient une machine à estimer π. Mets la vitesse au minimum pour voir chaque point tomber un à un." data-en="<b>Try it:</b> a radius-1 disk has area π. Monte Carlo becomes a π-estimating machine. Set speed to minimum to watch each point land one by one." data-html="1"></p>
       </div>
     </aside>
   </main>
@@ -112,6 +116,7 @@
 
   <script src="../../assets/config.js"></script>
   <script src="../../assets/common.js"></script>
+  <script src="../../assets/simkit.js"></script>
   <script src="sim.js"></script>
   <script src="../../assets/feedback.js"></script>
 </body>

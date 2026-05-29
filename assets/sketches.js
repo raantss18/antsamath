@@ -402,6 +402,61 @@
       };
     },
 
+    /* 17 — somme de sinus (Fourier) */
+    fourier(ctx, color) {
+      let t = 0;
+      return (w, h) => {
+        ctx.clearRect(0, 0, w, h); t += 0.03;
+        ctx.strokeStyle = color; ctx.lineWidth = 2; ctx.globalAlpha = 0.95;
+        ctx.beginPath();
+        for (let px = 0; px <= w; px += 2) {
+          const x = px / w * Math.PI * 2;
+          let y = 0; for (let k = 1; k <= 9; k += 2) y += Math.sin(k * x + t) / k;
+          ctx.lineTo(px, h / 2 - y * h * 0.22);
+        }
+        ctx.stroke(); ctx.globalAlpha = 1;
+      };
+    },
+
+    /* 18 — marche aléatoire géométrique (Black-Scholes) */
+    gbm(ctx, color) {
+      let paths = [];
+      function mk() { const p = [1]; for (let i = 1; i < 60; i++) p.push(p[i - 1] * Math.exp(0.002 + 0.06 * (Math.random() - 0.5))); return p; }
+      for (let i = 0; i < 5; i++) paths.push(mk());
+      let f = 0;
+      return (w, h) => {
+        f++; if (f % 70 === 0) { paths.push(mk()); if (paths.length > 6) paths.shift(); }
+        ctx.clearRect(0, 0, w, h);
+        let lo = 1e9, hi = -1e9; for (const p of paths) for (const v of p) { if (v < lo) lo = v; if (v > hi) hi = v; }
+        const yOf = v => h - (v - lo) / (hi - lo + 1e-6) * h * 0.9 - h * 0.05;
+        for (let pi = 0; pi < paths.length; pi++) {
+          const p = paths[pi];
+          ctx.strokeStyle = color; ctx.globalAlpha = 0.2 + 0.7 * (pi / paths.length); ctx.lineWidth = 1.6;
+          ctx.beginPath(); for (let i = 0; i < p.length; i++) { const x = i / (p.length - 1) * w; i ? ctx.lineTo(x, yOf(p[i])) : ctx.moveTo(x, yOf(p[i])); } ctx.stroke();
+        }
+        ctx.globalAlpha = 1;
+      };
+    },
+
+    /* 19 — décollage (courbe portance vs vitesse + avion) */
+    takeoff(ctx, color) {
+      let t = 0;
+      return (w, h) => {
+        ctx.clearRect(0, 0, w, h); t += 0.012; if (t > 1) t = 0;
+        const g = h * 0.82;
+        ctx.strokeStyle = color; ctx.globalAlpha = 0.3; ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(0, g); ctx.lineTo(w, g); ctx.stroke();
+        const x = t * w, lift = t * t, y = t < 0.6 ? g : g - (t - 0.6) / 0.4 * h * 0.5;
+        const ang = t < 0.6 ? 0 : -(t - 0.6) / 0.4 * 0.5;
+        ctx.globalAlpha = 1; ctx.fillStyle = color;
+        ctx.save(); ctx.translate(x, y - 6); ctx.rotate(ang);
+        ctx.beginPath(); ctx.moveTo(-11, 0); ctx.lineTo(9, 0); ctx.lineTo(13, -3); ctx.lineTo(9, -4); ctx.lineTo(-7, -5); ctx.closePath(); ctx.fill();
+        ctx.fillRect(-3, -4, 7, -5);
+        ctx.restore();
+        ctx.globalAlpha = 1;
+      };
+    },
+
     /* HÉROS A — Lissajous discrets multicolores */
     heroLissajous(ctx, colors) {
       let t = 0;

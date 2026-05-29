@@ -1,0 +1,10 @@
+{
+  "sketch": "gbm",
+  "color": "#2E9E5B",
+  "cat": "probas",
+  "level": 3,
+  "formula": "C = S₀N(d₁) − Ke⁻ʳᵀN(d₂)",
+  "date": "2026-05-30",
+  "fr": { "title": "Black-Scholes : prix d’une option", "desc": "Simule des milliers de trajectoires de cours et vois le prix Monte Carlo converger vers la formule de Black-Scholes." },
+  "en": { "title": "Black-Scholes: Option Pricing", "desc": "Simulate thousands of price paths and watch the Monte Carlo price converge to the Black-Scholes formula." }
+}

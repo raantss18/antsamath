@@ -70,9 +70,9 @@
   } else {
     mount.innerHTML =
       '<div class="giscus-ph">' +
-        '<p data-html="1" data-fr="Le forum s’active dès que <b>Giscus</b> est configuré dans <code>assets/config.js</code> (commentaires adossés aux GitHub Discussions, un fil par simulation). En attendant, viens échanger ici :" data-en="The forum turns on once <b>Giscus</b> is set in <code>assets/config.js</code> (comments backed by GitHub Discussions, one thread per simulation). Meanwhile, come chat here:"></p>' +
+        '<p data-fr="Une question, une idée, un bug ? Viens en discuter :" data-en="A question, an idea, a bug? Come and discuss it:"></p>' +
         '<div class="ph-row">' +
-          '<a class="pill-link" href="https://www.facebook.com/Mathmantique" target="_blank" rel="noopener">Facebook · Mathmantique</a>' +
+          '<a class="pill-link" href="' + "https://www.facebook.com/share/18awvnN48U/" + '" target="_blank" rel="noopener">Facebook · Mathmantique</a>' +
           '<a class="pill-link" href="mailto:antsamath.cdf@gmail.com?subject=' + encodeURIComponent("Discussion : " + ID) + '">Email</a>' +
         '</div>' +
       '</div>';

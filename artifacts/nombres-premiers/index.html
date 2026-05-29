@@ -41,23 +41,17 @@
     </div>
 
     <aside class="panel">
+      <div class="block" id="sim-controls"></div>
+
       <div class="block">
         <h3><span class="ic">▦</span><span data-fr="La vue" data-en="The view">La vue</span></h3>
-        <div class="seg" id="views">
+        <div class="seg" id="views" data-tip-fr="Deux façons de voir les premiers : le crible élimine les multiples un à un ; la spirale d’Ulam enroule les entiers et n’éclaire que les premiers." data-tip-en="Two ways to see primes: the sieve removes multiples one by one; Ulam’s spiral coils the integers and lights only the primes.">
           <button data-v="sieve" class="on" data-fr="Crible d’Ératosthène" data-en="Sieve of Eratosthenes">Crible d’Ératosthène</button>
           <button data-v="ulam" data-fr="Spirale d’Ulam" data-en="Ulam spiral">Spirale d’Ulam</button>
         </div>
-        <div class="ctrl" style="margin-top:14px">
+        <div class="ctrl" style="margin-top:14px" data-tip-fr="Plus grand entier exploré. Plus il est grand, plus on voit la raréfaction des premiers (et les diagonales de la spirale)." data-tip-en="Largest integer explored. The larger it is, the more you see primes thinning out (and the spiral’s diagonals).">
           <label><span data-fr="Jusqu’à n" data-en="Up to n">Jusqu’à n</span><span class="val" id="v-n">289</span></label>
           <input type="range" id="s-n" min="49" max="961" step="4" value="289" />
-        </div>
-        <div class="ctrl">
-          <label><span data-fr="Vitesse" data-en="Speed">Vitesse</span><span class="val" id="v-speed">×4</span></label>
-          <input type="range" id="s-speed" min="1" max="40" step="1" value="4" />
-        </div>
-        <div class="btnrow">
-          <button class="mini primary" id="btn-play" data-fr="Pause" data-en="Pause">Pause</button>
-          <button class="mini ghost" id="btn-reset" data-fr="Recommencer" data-en="Restart">Recommencer</button>
         </div>
       </div>
 
@@ -73,10 +67,20 @@
 
       <div class="block lesson">
         <h3><span class="ic">𝑓</span><span data-fr="La notion" data-en="The idea">La notion</span></h3>
-        <p data-fr="Un nombre <strong>premier</strong> n’a que deux diviseurs : 1 et lui-même (2, 3, 5, 7, 11…). Ce sont les « briques » de tous les autres nombres par multiplication." data-en="A <strong>prime</strong> number has exactly two divisors: 1 and itself (2, 3, 5, 7, 11…). They are the building blocks of every other number by multiplication." data-html="1"></p>
-        <p id="view-note"></p>
-        <div class="fbox">π(n) ≈ <span class="hot">n ⁄ ln n</span></div>
-        <p class="tip" data-fr="<b>Étonnant :</b> les premiers se raréfient (densité ≈ 1⁄ln n) mais ne s’arrêtent jamais — Euclide l’a prouvé il y a 2 300 ans. La spirale d’Ulam révèle d’étranges diagonales." data-en="<b>Surprising:</b> primes thin out (density ≈ 1⁄ln n) but never stop — Euclid proved it 2,300 years ago. Ulam’s spiral reveals strange diagonals." data-html="1"></p>
+        <div class="step">
+          <span class="lab" data-fr="Intuition" data-en="Intuition">Intuition</span>
+          <div class="body" data-fr="Un nombre <strong>premier</strong> n’a que deux diviseurs : 1 et lui-même (2, 3, 5, 7, 11…). Ce sont les « briques » qui fabriquent tous les autres nombres par multiplication." data-en="A <strong>prime</strong> has exactly two divisors: 1 and itself (2, 3, 5, 7, 11…). They are the building blocks that make every other number by multiplication." data-html="1"></div>
+        </div>
+        <div class="step">
+          <span class="lab" data-fr="Méthode" data-en="Method">Méthode</span>
+          <div class="body" id="view-note" data-html="1"></div>
+        </div>
+        <div class="step">
+          <span class="lab" data-fr="Détail" data-en="Detail">Détail</span>
+          <div class="body" data-fr="Les premiers se raréfient mais ne s’arrêtent jamais (Euclide, il y a 2 300 ans). Le théorème des nombres premiers dit que leur densité autour de n vaut environ 1⁄ln n :" data-en="Primes thin out but never stop (Euclid, 2,300 years ago). The prime number theorem says their density around n is about 1⁄ln n:" data-html="1"></div>
+          <div class="fbox">π(n) ≈ <span class="hot">n ⁄ ln n</span></div>
+        </div>
+        <p class="tip" data-fr="<b>Essaie :</b> ralentis et regarde le crible barrer les multiples de 2, puis de 3, puis de 5… Passe à la spirale d’Ulam : les premiers s’alignent sur d’étranges diagonales." data-en="<b>Try it:</b> slow it down and watch the sieve cross multiples of 2, then 3, then 5… Switch to Ulam’s spiral: primes line up on strange diagonals." data-html="1"></p>
       </div>
     </aside>
   </main>
@@ -85,6 +89,7 @@
 
   <script src="../../assets/config.js"></script>
   <script src="../../assets/common.js"></script>
+  <script src="../../assets/simkit.js"></script>
   <script src="sim.js"></script>
   <script src="../../assets/feedback.js"></script>
 </body>

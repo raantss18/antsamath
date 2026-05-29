@@ -153,4 +153,5 @@
 
   new ResizeObserver(fit).observe(cv);
   fit();
+  if (window.SimKit) SimKit.decorateTips(document);
 })();

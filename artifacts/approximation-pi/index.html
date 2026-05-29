@@ -41,20 +41,14 @@
     </div>
 
     <aside class="panel">
+      <div class="block" id="sim-controls"></div>
+
       <div class="block">
         <h3><span class="ic">∿</span><span data-fr="La méthode" data-en="The method">La méthode</span></h3>
-        <div class="seg" id="methods">
+        <div class="seg" id="methods" data-tip-fr="Trois façons historiques d’approcher π. Archimède encadre le cercle par des polygones ; Leibniz additionne une série infinie ; Monte Carlo utilise le hasard." data-tip-en="Three historical ways to approach π. Archimedes brackets the circle with polygons; Leibniz sums an infinite series; Monte Carlo uses randomness.">
           <button data-m="archi" class="on" data-fr="Archimède" data-en="Archimedes">Archimède</button>
           <button data-m="leibniz" data-fr="Leibniz" data-en="Leibniz">Leibniz</button>
           <button data-m="mc" data-fr="Monte Carlo" data-en="Monte Carlo">Monte Carlo</button>
-        </div>
-        <div class="ctrl" style="margin-top:14px">
-          <label><span data-fr="Vitesse" data-en="Speed">Vitesse</span><span class="val" id="v-speed">×1</span></label>
-          <input type="range" id="s-speed" min="1" max="20" step="1" value="1" />
-        </div>
-        <div class="btnrow">
-          <button class="mini primary" id="btn-play" data-fr="Pause" data-en="Pause">Pause</button>
-          <button class="mini ghost" id="btn-reset" data-fr="Relancer" data-en="Restart">Relancer</button>
         </div>
       </div>
 
@@ -69,10 +63,20 @@
 
       <div class="block lesson">
         <h3><span class="ic">𝑓</span><span data-fr="La notion" data-en="The idea">La notion</span></h3>
-        <p data-fr="π relie le tour d’un cercle à son diamètre. C’est un nombre <strong>irrationnel</strong> : impossible à écrire exactement. On ne peut que l’<strong>approcher</strong> — et il existe mille façons de le faire." data-en="π links a circle’s perimeter to its diameter. It is an <strong>irrational</strong> number: impossible to write exactly. We can only <strong>approximate</strong> it — and there are countless ways." data-html="1"></p>
-        <div class="fbox" id="f-method">—</div>
-        <p id="method-note"></p>
-        <p class="tip" data-fr="<b>Compare :</b> Archimède est très efficace, Monte Carlo est lent mais joli, et la série de Leibniz converge… extrêmement lentement !" data-en="<b>Compare:</b> Archimedes is very efficient, Monte Carlo is slow but pretty, and Leibniz’s series converges… extremely slowly!" data-html="1"></p>
+        <div class="step">
+          <span class="lab" data-fr="Intuition" data-en="Intuition">Intuition</span>
+          <div class="body" data-fr="π relie le tour d’un cercle à son diamètre. Comme il est <strong>irrationnel</strong>, on ne peut pas l’écrire exactement : on ne fait que s’en approcher de mieux en mieux." data-en="π links a circle’s perimeter to its diameter. Being <strong>irrational</strong>, it can’t be written exactly: we only get closer and closer." data-html="1"></div>
+        </div>
+        <div class="step">
+          <span class="lab" data-fr="Formule" data-en="Formula">Formule</span>
+          <div class="body" id="method-formula-note" data-fr="La formule dépend de la méthode choisie :" data-en="The formula depends on the chosen method:" data-html="1"></div>
+          <div class="fbox" id="f-method">—</div>
+        </div>
+        <div class="step">
+          <span class="lab" data-fr="Détail" data-en="Detail">Détail</span>
+          <div class="body" id="method-note" data-html="1"></div>
+        </div>
+        <p class="tip" data-fr="<b>Compare la vitesse :</b> Archimède gagne ~1 décimale tous les quelques côtés ; Leibniz converge si lentement qu’il faut des centaines de termes pour 2 décimales ; Monte Carlo est lent et bruité. Mets la vitesse au minimum et utilise le pas-à-pas." data-en="<b>Compare the speed:</b> Archimedes gains ~1 digit every few sides; Leibniz converges so slowly it needs hundreds of terms for 2 digits; Monte Carlo is slow and noisy. Set speed to minimum and use Step." data-html="1"></p>
       </div>
     </aside>
   </main>
@@ -81,6 +85,7 @@
 
   <script src="../../assets/config.js"></script>
   <script src="../../assets/common.js"></script>
+  <script src="../../assets/simkit.js"></script>
   <script src="sim.js"></script>
   <script src="../../assets/feedback.js"></script>
 </body>

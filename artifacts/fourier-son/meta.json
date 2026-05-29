@@ -1,0 +1,10 @@
+{
+  "sketch": "fourier",
+  "color": "#16A39B",
+  "cat": "analyse",
+  "level": 3,
+  "formula": "f(t) = Σ aₙ sin(nωt)",
+  "date": "2026-05-30",
+  "fr": { "title": "Fourier : le son décomposé", "desc": "Tout son est une somme d’ondes pures. Reconstruis un signal harmonique par harmonique — et écoute-le." },
+  "en": { "title": "Fourier: Sound Decomposed", "desc": "Every sound is a sum of pure waves. Rebuild a signal harmonic by harmonic — and hear it." }
+}

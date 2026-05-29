@@ -41,31 +41,29 @@
     </div>
 
     <aside class="panel">
+      <div class="block" id="sim-controls"></div>
+
       <div class="block">
         <h3><span class="ic">▲</span><span data-fr="Le tir" data-en="The launch">Le tir</span></h3>
-        <div class="ctrl">
+        <div class="ctrl" data-tip-fr="Inclinaison du canon par rapport au sol. Sans air, la portée est maximale à 45°." data-tip-en="Tilt of the cannon from the ground. Without air, the range is greatest at 45°.">
           <label><span data-fr="Angle θ" data-en="Angle θ">Angle θ</span><span class="val" id="v-ang">45°</span></label>
           <input type="range" id="s-ang" min="5" max="85" step="1" value="45" />
         </div>
-        <div class="ctrl">
+        <div class="ctrl" data-tip-fr="Vitesse du projectile au moment du lancer (en m/s). La portée et la hauteur croissent comme le carré de v₀." data-tip-en="Speed of the projectile at launch (m/s). Range and height grow like the square of v₀.">
           <label><span data-fr="Vitesse initiale v₀" data-en="Initial speed v₀">Vitesse initiale v₀</span><span class="val" id="v-v0">30 m/s</span></label>
           <input type="range" id="s-v0" min="5" max="60" step="1" value="30" />
-        </div>
-        <div class="btnrow">
-          <button class="mini primary" id="btn-play" data-fr="Pause" data-en="Pause">Pause</button>
-          <button class="mini ghost" id="btn-fire" data-fr="Relancer" data-en="Relaunch">Relancer</button>
         </div>
       </div>
 
       <div class="block">
         <h3><span class="ic">↓</span><span data-fr="La gravité" data-en="Gravity">La gravité</span></h3>
-        <div class="seg" id="grav">
+        <div class="seg" id="grav" data-tip-fr="Choisis un astre : sa pesanteur g change tout. Sur la Lune (g faible), le projectile vole bien plus loin et plus longtemps." data-tip-en="Pick a world: its gravity g changes everything. On the Moon (low g), the projectile flies much farther and longer.">
           <button data-g="9.81" class="on" data-fr="Terre" data-en="Earth">Terre</button>
           <button data-g="1.62" data-fr="Lune" data-en="Moon">Lune</button>
           <button data-g="3.71" data-fr="Mars" data-en="Mars">Mars</button>
           <button data-g="24.79" data-fr="Jupiter" data-en="Jupiter">Jupiter</button>
         </div>
-        <div class="ctrl" style="margin-top:14px">
+        <div class="ctrl" style="margin-top:14px" data-tip-fr="Intensité de la pesanteur en m/s². Plus g est grand, plus la trajectoire est « écrasée » et courte." data-tip-en="Gravity strength in m/s². The larger g, the flatter and shorter the trajectory.">
           <label><span data-fr="g (m/s²)" data-en="g (m/s²)">g (m/s²)</span><span class="val" id="v-g">9.81</span></label>
           <input type="range" id="s-g" min="1" max="25" step="0.01" value="9.81" />
         </div>
@@ -73,11 +71,11 @@
 
       <div class="block">
         <h3><span class="ic">≈</span><span data-fr="Résistance de l’air" data-en="Air resistance">Résistance de l’air</span></h3>
-        <div class="toggle-row" style="margin-bottom:14px">
+        <div class="toggle-row" style="margin-bottom:14px" data-tip-fr="Active une force qui freine le projectile, proportionnelle au carré de sa vitesse. La belle parabole devient asymétrique." data-tip-en="Turns on a force that slows the projectile, proportional to the square of its speed. The neat parabola becomes asymmetric.">
           <span data-fr="Activer le frottement" data-en="Enable drag">Activer le frottement</span>
           <label class="switch"><input type="checkbox" id="drag" /><span class="track"></span></label>
         </div>
-        <div class="ctrl" id="c-k" style="display:none">
+        <div class="ctrl" id="c-k" style="display:none" data-tip-fr="Force du frottement de l’air. Plus il est grand, plus le projectile est freiné et retombe vite." data-tip-en="Strength of air drag. The larger it is, the more the projectile is slowed and the sooner it falls.">
           <label><span data-fr="Coefficient de traînée" data-en="Drag coefficient">Coefficient de traînée</span><span class="val" id="v-k">0.010</span></label>
           <input type="range" id="s-k" min="0.002" max="0.05" step="0.002" value="0.01" />
         </div>
@@ -94,11 +92,21 @@
 
       <div class="block lesson">
         <h3><span class="ic">𝑓</span><span data-fr="La notion" data-en="The idea">La notion</span></h3>
-        <p data-fr="Sans air, le mouvement se décompose en deux : horizontalement la vitesse est <strong>constante</strong>, verticalement la gravité fait une <strong>accélération constante</strong>. Le résultat est une <strong>parabole</strong>." data-en="Without air, the motion splits in two: horizontally the speed is <strong>constant</strong>, vertically gravity gives a <strong>constant acceleration</strong>. The result is a <strong>parabola</strong>." data-html="1"></p>
-        <div class="fbox">x(t) = v₀·cosθ·t<br>y(t) = v₀·sinθ·t − ½·g·t²</div>
-        <p data-fr="On en déduit la <strong>portée</strong> (distance au sol) et la <strong>hauteur maximale</strong> :" data-en="From this we get the <strong>range</strong> (ground distance) and the <strong>maximum height</strong>:" data-html="1"></p>
-        <div class="fbox"><span class="hot">R</span> = v₀²·sin(2θ) ⁄ g &nbsp;·&nbsp; H = v₀²·sin²θ ⁄ 2g</div>
-        <p class="tip" data-fr="<b>Essaie :</b> la portée est maximale à <strong>45°</strong>. Active la résistance de l’air : la parabole devient asymétrique et la portée chute." data-en="<b>Try it:</b> range is greatest at <strong>45°</strong>. Turn on air drag: the parabola becomes asymmetric and the range drops." data-html="1"></p>
+        <div class="step">
+          <span class="lab" data-fr="Intuition" data-en="Intuition">Intuition</span>
+          <div class="body" data-fr="Une fois lancé, le projectile n’est plus poussé : seule la gravité agit. Le mouvement se sépare en deux indépendants — horizontal et vertical." data-en="Once launched, the projectile is no longer pushed: only gravity acts. The motion splits into two independent ones — horizontal and vertical." data-html="1"></div>
+        </div>
+        <div class="step">
+          <span class="lab" data-fr="Formule" data-en="Formula">Formule</span>
+          <div class="body" data-fr="Horizontalement, vitesse constante ; verticalement, accélération constante −g. D’où la trajectoire :" data-en="Horizontally, constant speed; vertically, constant acceleration −g. Hence the trajectory:" data-html="1"></div>
+          <div class="fbox">x(t) = v₀·cosθ·t<br>y(t) = v₀·sinθ·t − ½·g·t²</div>
+        </div>
+        <div class="step">
+          <span class="lab" data-fr="Détail" data-en="Detail">Détail</span>
+          <div class="body" data-fr="En éliminant t, y devient une fonction du second degré en x : une <strong>parabole</strong>. On en tire la portée R et la hauteur H :" data-en="Eliminating t, y becomes a quadratic in x: a <strong>parabola</strong>. From it we get the range R and the height H:" data-html="1"></div>
+          <div class="fbox"><span class="hot">R</span> = v₀²·sin(2θ) ⁄ g &nbsp;·&nbsp; H = v₀²·sin²θ ⁄ 2g</div>
+        </div>
+        <p class="tip" data-fr="<b>Essaie :</b> garde v₀ fixe et balaie l’angle — la portée culmine à 45°. Active l’air : la courbe pointillée (vide) reste en référence pour comparer." data-en="<b>Try it:</b> keep v₀ fixed and sweep the angle — range peaks at 45°. Turn on air: the dashed curve (vacuum) stays as a reference to compare." data-html="1"></p>
       </div>
     </aside>
   </main>
@@ -107,6 +115,7 @@
 
   <script src="../../assets/config.js"></script>
   <script src="../../assets/common.js"></script>
+  <script src="../../assets/simkit.js"></script>
   <script src="sim.js"></script>
   <script src="../../assets/feedback.js"></script>
 </body>

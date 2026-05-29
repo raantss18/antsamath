@@ -42,53 +42,47 @@
     </div>
 
     <aside class="panel">
+      <div class="block" id="sim-controls"></div>
+
       <div class="block">
-        <h3><span class="ic">▶</span><span data-fr="Lâcher le pendule" data-en="Drop the pendulum">Lâcher le pendule</span></h3>
-        <div class="btnrow" style="margin-bottom:16px">
-          <button class="mini primary" id="btn-play" data-fr="Pause" data-en="Pause">Pause</button>
-          <button class="mini ghost" id="btn-reset" data-fr="Réinitialiser" data-en="Reset">Réinitialiser</button>
+        <h3><span class="ic">∠</span><span data-fr="Conditions initiales" data-en="Initial conditions">Conditions initiales</span></h3>
+        <div class="ctrl" data-tip-fr="Angle de départ du 1ᵉʳ bras (mesuré depuis le bas). Le système étant chaotique, 1° d’écart change tout au bout de quelques secondes." data-tip-en="Starting angle of the 1st arm (from the bottom). The system being chaotic, a 1° difference changes everything after a few seconds.">
+          <label><span data-fr="Angle θ₁ de départ" data-en="Starting angle θ₁">Angle θ₁ de départ</span><span class="val" id="v-t1">120°</span></label>
+          <input type="range" id="s-t1" min="0" max="180" step="1" value="120" />
         </div>
-        <div class="toggle-row">
-          <span data-fr="Pendule jumeau (écart de 0,001 rad)" data-en="Twin pendulum (0.001 rad apart)">Pendule jumeau (écart de 0,001 rad)</span>
+        <div class="ctrl" data-tip-fr="Angle de départ du 2ᵉ bras (celui accroché au bout du premier)." data-tip-en="Starting angle of the 2nd arm (the one hanging from the tip of the first).">
+          <label><span data-fr="Angle θ₂ de départ" data-en="Starting angle θ₂">Angle θ₂ de départ</span><span class="val" id="v-t2">150°</span></label>
+          <input type="range" id="s-t2" min="0" max="180" step="1" value="150" />
+        </div>
+        <div class="toggle-row" style="margin-top:6px" data-tip-fr="Affiche un 2ᵉ pendule (bleu) lâché à 0,001 rad du premier. Regarde-les se séparer : c’est l’« effet papillon »." data-tip-en="Shows a 2nd pendulum (blue) released 0.001 rad from the first. Watch them split apart: the “butterfly effect”.">
+          <span data-fr="Pendule jumeau" data-en="Twin pendulum">Pendule jumeau</span>
           <label class="switch"><input type="checkbox" id="twin" /><span class="track"></span></label>
         </div>
       </div>
 
       <div class="block">
-        <h3><span class="ic">∠</span><span data-fr="Conditions initiales" data-en="Initial conditions">Conditions initiales</span></h3>
-        <div class="ctrl">
-          <label><span data-fr="Angle θ₁ de départ" data-en="Starting angle θ₁">Angle θ₁ de départ</span><span class="val" id="v-t1">120°</span></label>
-          <input type="range" id="s-t1" min="0" max="180" step="1" value="120" />
-        </div>
-        <div class="ctrl">
-          <label><span data-fr="Angle θ₂ de départ" data-en="Starting angle θ₂">Angle θ₂ de départ</span><span class="val" id="v-t2">150°</span></label>
-          <input type="range" id="s-t2" min="0" max="180" step="1" value="150" />
-        </div>
-      </div>
-
-      <div class="block">
-        <h3><span class="ic">⚙</span><span data-fr="Les paramètres" data-en="Parameters">Les paramètres</span></h3>
-        <div class="ctrl">
+        <h3><span class="ic">⚙</span><span data-fr="Les paramètres physiques" data-en="Physical parameters">Les paramètres physiques</span></h3>
+        <div class="ctrl" data-tip-fr="Longueur du 1ᵉʳ bras. Allonger un bras change l’inertie et le rythme des oscillations." data-tip-en="Length of the 1st arm. Lengthening an arm changes the inertia and the rhythm of the swings.">
           <label><span data-fr="Longueur L₁" data-en="Length L₁">Longueur L₁</span><span class="val" id="v-l1">1.00</span></label>
           <input type="range" id="s-l1" min="0.5" max="1.5" step="0.05" value="1" />
         </div>
-        <div class="ctrl">
+        <div class="ctrl" data-tip-fr="Longueur du 2ᵉ bras." data-tip-en="Length of the 2nd arm.">
           <label><span data-fr="Longueur L₂" data-en="Length L₂">Longueur L₂</span><span class="val" id="v-l2">1.00</span></label>
           <input type="range" id="s-l2" min="0.5" max="1.5" step="0.05" value="1" />
         </div>
-        <div class="ctrl">
+        <div class="ctrl" data-tip-fr="Masse au bout du 1ᵉʳ bras. Une masse plus lourde « entraîne » davantage le second bras." data-tip-en="Mass at the tip of the 1st arm. A heavier mass drives the second arm more.">
           <label><span data-fr="Masse m₁" data-en="Mass m₁">Masse m₁</span><span class="val" id="v-m1">1.0</span></label>
           <input type="range" id="s-m1" min="0.5" max="3" step="0.1" value="1" />
         </div>
-        <div class="ctrl">
+        <div class="ctrl" data-tip-fr="Masse au bout du 2ᵉ bras." data-tip-en="Mass at the tip of the 2nd arm.">
           <label><span data-fr="Masse m₂" data-en="Mass m₂">Masse m₂</span><span class="val" id="v-m2">1.0</span></label>
           <input type="range" id="s-m2" min="0.5" max="3" step="0.1" value="1" />
         </div>
-        <div class="ctrl">
+        <div class="ctrl" data-tip-fr="Intensité de la pesanteur. Sur Terre g ≈ 9,8 m/s². Plus g est grand, plus le pendule bat vite." data-tip-en="Strength of gravity. On Earth g ≈ 9.8 m/s². The larger g, the faster the pendulum beats.">
           <label><span data-fr="Gravité g" data-en="Gravity g">Gravité g</span><span class="val" id="v-g">9.8</span></label>
           <input type="range" id="s-g" min="1" max="20" step="0.1" value="9.8" />
         </div>
-        <div class="ctrl">
+        <div class="ctrl" data-tip-fr="Frottement (amortissement). À 0 %, l’énergie est conservée et le mouvement ne s’arrête jamais. Au-dessus, le pendule perd de l’énergie et finit par s’immobiliser." data-tip-en="Friction (damping). At 0 %, energy is conserved and the motion never stops. Above it, the pendulum loses energy and eventually comes to rest.">
           <label><span data-fr="Frottement" data-en="Friction">Frottement</span><span class="val" id="v-damp">0%</span></label>
           <input type="range" id="s-damp" min="0" max="100" step="1" value="0" />
         </div>
@@ -96,10 +90,20 @@
 
       <div class="block lesson">
         <h3><span class="ic">𝑓</span><span data-fr="La notion" data-en="The idea">La notion</span></h3>
-        <p data-fr="Un <strong>double pendule</strong> = un pendule accroché au bout d’un autre. Ses équations du mouvement (issues des lois de Newton / de Lagrange) sont parfaitement <strong>déterministes</strong> : connaître l’état exact à un instant détermine tout l’avenir." data-en="A <strong>double pendulum</strong> = a pendulum hanging from another. Its equations of motion (from Newton’s / Lagrange’s laws) are perfectly <strong>deterministic</strong>: knowing the exact state at one instant determines the whole future." data-html="1"></p>
-        <div class="fbox">θ̈₁ = f₁(θ₁, θ₂, θ̇₁, θ̇₂)<br>θ̈₂ = f₂(θ₁, θ₂, θ̇₁, θ̇₂)</div>
-        <p data-fr="Mais ce système est <strong>chaotique</strong> : un écart minuscule sur l’angle de départ enfle de façon exponentielle. C’est la <strong>sensibilité aux conditions initiales</strong>, l’« effet papillon »." data-en="But this system is <strong>chaotic</strong>: a tiny change in the starting angle grows exponentially. This is <strong>sensitivity to initial conditions</strong> — the “butterfly effect.”" data-html="1"></p>
-        <p class="tip" data-fr="<b>Essaie :</b> active le pendule jumeau. Les deux partent quasi identiques… puis divergent complètement. Sans frottement, l’<strong>énergie</strong> se conserve." data-en="<b>Try it:</b> turn on the twin pendulum. The two start almost identical… then diverge completely. With no friction, <strong>energy</strong> is conserved." data-html="1"></p>
+        <div class="step">
+          <span class="lab" data-fr="Intuition" data-en="Intuition">Intuition</span>
+          <div class="body" data-fr="Un pendule accroché au bout d’un autre. Les lois de la physique fixent <strong>exactement</strong> son mouvement — rien n’est aléatoire ici." data-en="A pendulum hanging from another. The laws of physics fix its motion <strong>exactly</strong> — nothing here is random." data-html="1"></div>
+        </div>
+        <div class="step">
+          <span class="lab" data-fr="Formule" data-en="Formula">Formule</span>
+          <div class="body" data-fr="Les équations de Lagrange donnent les accélérations angulaires, qui dépendent des angles, des vitesses, des longueurs et des masses :" data-en="Lagrange’s equations give the angular accelerations, depending on angles, speeds, lengths and masses:" data-html="1"></div>
+          <div class="fbox">θ̈₁ = f₁(θ₁, θ₂, θ̇₁, θ̇₂)<br>θ̈₂ = f₂(θ₁, θ₂, θ̇₁, θ̇₂)</div>
+        </div>
+        <div class="step">
+          <span class="lab" data-fr="Détail" data-en="Detail">Détail</span>
+          <div class="body" data-fr="Ces équations n’ont pas de solution simple : on les <strong>intègre pas à pas</strong> (méthode de Runge-Kutta). Le système est <strong>chaotique</strong> : deux départs très proches divergent <strong>exponentiellement</strong> (sensibilité aux conditions initiales)." data-en="These equations have no simple solution: we <strong>integrate them step by step</strong> (Runge-Kutta). The system is <strong>chaotic</strong>: two nearby starts diverge <strong>exponentially</strong> (sensitivity to initial conditions)." data-html="1"></div>
+        </div>
+        <p class="tip" data-fr="<b>Essaie :</b> active le pendule jumeau et baisse la vitesse. Les deux trajectoires restent collées… puis se séparent d’un coup. Sans frottement, l’énergie totale se conserve." data-en="<b>Try it:</b> turn on the twin pendulum and lower the speed. The two paths stay glued… then suddenly split. With no friction, total energy is conserved." data-html="1"></p>
       </div>
     </aside>
   </main>
@@ -108,6 +112,7 @@
 
   <script src="../../assets/config.js"></script>
   <script src="../../assets/common.js"></script>
+  <script src="../../assets/simkit.js"></script>
   <script src="sim.js"></script>
   <script src="../../assets/feedback.js"></script>
 </body>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Black-Scholes · antsamath</title>
+<script>document.documentElement.dataset.theme=localStorage.getItem("antsamath-theme")||"light";document.documentElement.lang=localStorage.getItem("antsamath-lang")||"fr";</script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Lexend:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../assets/theme-a.css" />
+<link rel="stylesheet" href="../../assets/artifact.css" />
+<style>
+  body { --accent: #2E9E5B; }
+  html[data-theme="dark"] body { --accent: #54CE82; }
+</style>
+</head>
+<body>
+  <header class="art-nav">
+    <a class="back" href="../../index.html">← <span data-fr="Accueil" data-en="Home">Accueil</span></a>
+    <div class="art-head">
+      <div class="tag" data-fr="Probabilités · Finance quantitative" data-en="Probability · Quantitative finance">Probabilités · Finance quantitative</div>
+      <h1 data-fr="Black-Scholes : prix d’une option" data-en="Black-Scholes: option pricing">Black-Scholes : prix d’une option</h1>
+    </div>
+    <div class="art-tools">
+      <button class="themebtn" type="button"></button>
+      <button class="langbtn" type="button">EN</button>
+    </div>
+  </header>
+
+  <main class="art-main">
+    <div class="stage-wrap">
+      <div class="stage">
+        <canvas id="cv"></canvas>
+        <div class="readouts">
+          <span class="pill" data-fr="trajectoires" data-en="paths">trajectoires</span><span class="pill"><b id="r-n">0</b></span>
+          <span class="pill" data-fr="prix MC" data-en="MC price">prix MC</span><span class="pill"><b id="r-mc">—</b></span>
+        </div>
+        <div class="legend" id="legend"></div>
+      </div>
+    </div>
+
+    <aside class="panel">
+      <div class="block" id="sim-controls"></div>
+
+      <div class="block">
+        <h3><span class="ic">◧</span><span data-fr="L’option" data-en="The option">L’option</span></h3>
+        <div class="seg" id="otype" data-tip-fr="Call = droit d’ACHETER l’actif au prix K. Put = droit de le VENDRE au prix K. Un call gagne si le cours monte, un put s’il baisse." data-tip-en="Call = right to BUY the asset at price K. Put = right to SELL it at price K. A call gains if the price rises, a put if it falls.">
+          <button data-t="call" class="on" data-fr="Call (achat)" data-en="Call">Call (achat)</button>
+          <button data-t="put" data-fr="Put (vente)" data-en="Put">Put (vente)</button>
+        </div>
+        <div class="ctrl" style="margin-top:16px" data-tip-fr="Prix actuel de l’actif (le « spot » S₀), aujourd’hui." data-tip-en="Current price of the asset (the ‘spot’ S₀), today.">
+          <label><span data-fr="Prix actuel S₀" data-en="Spot price S₀">Prix actuel S₀</span><span class="val" id="v-s0">100</span></label>
+          <input type="range" id="s-s0" min="50" max="150" step="1" value="100" />
+        </div>
+        <div class="ctrl" data-tip-fr="Prix d’exercice (strike) : le prix convenu pour acheter/vendre à l’échéance. Le gain final dépend de l’écart entre le cours et K." data-tip-en="Strike price: the agreed price to buy/sell at maturity. The final payoff depends on the gap between the price and K.">
+          <label><span data-fr="Prix d’exercice K" data-en="Strike K">Prix d’exercice K</span><span class="val" id="v-k">100</span></label>
+          <input type="range" id="s-k" min="50" max="150" step="1" value="100" />
+        </div>
+      </div>
+
+      <div class="block">
+        <h3><span class="ic">≈</span><span data-fr="Le marché" data-en="The market">Le marché</span></h3>
+        <div class="ctrl" data-tip-fr="Volatilité σ : l’ampleur (annualisée) des fluctuations du cours. Plus elle est grande, plus l’option a de valeur — l’incertitude se paie." data-tip-en="Volatility σ: the (annualized) magnitude of price swings. The larger it is, the more the option is worth — uncertainty has a price.">
+          <label><span data-fr="Volatilité σ" data-en="Volatility σ">Volatilité σ</span><span class="val" id="v-vol">20%</span></label>
+          <input type="range" id="s-vol" min="5" max="80" step="1" value="20" />
+        </div>
+        <div class="ctrl" data-tip-fr="Taux d’intérêt sans risque annuel r. Il sert à « actualiser » le gain futur en valeur d’aujourd’hui." data-tip-en="Annual risk-free interest rate r. Used to ‘discount’ the future payoff to today’s value.">
+          <label><span data-fr="Taux sans risque r" data-en="Risk-free rate r">Taux sans risque r</span><span class="val" id="v-r">3%</span></label>
+          <input type="range" id="s-r" min="0" max="12" step="0.5" value="3" />
+        </div>
+        <div class="ctrl" data-tip-fr="Maturité T : le temps qui reste avant l’échéance, en années. Plus l’échéance est lointaine, plus l’incertitude (et la valeur) augmente." data-tip-en="Maturity T: time left until expiry, in years. The further away, the more uncertainty (and value).">
+          <label><span data-fr="Maturité T" data-en="Maturity T">Maturité T</span><span class="val" id="v-t">1.0 an</span></label>
+          <input type="range" id="s-t" min="0.1" max="3" step="0.1" value="1" />
+        </div>
+      </div>
+
+      <div class="block">
+        <h3><span class="ic">∑</span><span data-fr="Prix & convergence" data-en="Price & convergence">Prix & convergence</span></h3>
+        <div class="kv">
+          <span class="k" data-fr="Black-Scholes (exact)" data-en="Black-Scholes (exact)">Black-Scholes (exact)</span><span class="v hot" id="k-bs">—</span>
+          <span class="k" data-fr="Monte Carlo" data-en="Monte Carlo">Monte Carlo</span><span class="v" id="k-mc">—</span>
+          <span class="k" data-fr="Écart" data-en="Gap">Écart</span><span class="v" id="k-gap">—</span>
+          <span class="k">d₁ · d₂</span><span class="v" id="k-d">—</span>
+          <span class="k" data-fr="Delta N(d₁)" data-en="Delta N(d₁)">Delta N(d₁)</span><span class="v" id="k-delta">—</span>
+        </div>
+      </div>
+
+      <div class="block lesson">
+        <h3><span class="ic">𝑓</span><span data-fr="La notion" data-en="The idea">La notion</span></h3>
+        <div class="step">
+          <span class="lab" data-fr="Intuition" data-en="Intuition">Intuition</span>
+          <div class="body" data-fr="Une <strong>option</strong> donne le <strong>droit</strong> (pas l’obligation) d’acheter un actif au prix K à l’échéance. Sa valeur = le gain futur moyen, ramené à aujourd’hui. Mais le futur est incertain…" data-en="An <strong>option</strong> gives the <strong>right</strong> (not the duty) to buy an asset at price K at maturity. Its value = the average future payoff, brought back to today. But the future is uncertain…" data-html="1"></div>
+        </div>
+        <div class="step">
+          <span class="lab" data-fr="Formule" data-en="Formula">Formule</span>
+          <div class="body" data-fr="Black & Scholes (1973) supposent que le cours suit un mouvement brownien géométrique et obtiennent une formule fermée :" data-en="Black & Scholes (1973) assume the price follows a geometric Brownian motion and derive a closed-form formula:" data-html="1"></div>
+          <div class="fbox">C = S₀·N(d₁) − K·e<sup>−rT</sup>·N(d₂)</div>
+        </div>
+        <div class="step">
+          <span class="lab" data-fr="Détail" data-en="Detail">Détail</span>
+          <div class="body" data-fr="Ici on vérifie cette formule par <strong>Monte Carlo</strong> : on simule des milliers de scénarios de cours, on calcule le gain de chacun, on en prend la moyenne actualisée. La <strong>loi des grands nombres</strong> fait converger ce prix vers la valeur exacte." data-en="Here we check the formula by <strong>Monte Carlo</strong>: we simulate thousands of price scenarios, compute each payoff, and average them discounted. The <strong>law of large numbers</strong> makes this price converge to the exact value." data-html="1"></div>
+        </div>
+        <p class="tip" data-fr="<b>Essaie :</b> monte la volatilité σ → l’option vaut plus cher (les scénarios extrêmes rapportent gros). Le prix Monte Carlo bruité se rapproche du prix exact à mesure que les trajectoires s’accumulent." data-en="<b>Try it:</b> raise volatility σ → the option is worth more (extreme scenarios pay big). The noisy Monte Carlo price approaches the exact one as paths pile up." data-html="1"></p>
+      </div>
+    </aside>
+  </main>
+
+  <section class="feedback-wrap" id="feedback"></section>
+
+  <script src="../../assets/config.js"></script>
+  <script src="../../assets/common.js"></script>
+  <script src="../../assets/simkit.js"></script>
+  <script src="sim.js"></script>
+  <script src="../../assets/feedback.js"></script>
+</body>
+</html>

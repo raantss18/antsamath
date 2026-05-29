@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Fourier · antsamath</title>
+<script>document.documentElement.dataset.theme=localStorage.getItem("antsamath-theme")||"light";document.documentElement.lang=localStorage.getItem("antsamath-lang")||"fr";</script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Lexend:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../assets/theme-a.css" />
+<link rel="stylesheet" href="../../assets/artifact.css" />
+<style>
+  body { --accent: #11968F; }
+  html[data-theme="dark"] body { --accent: #2FD3C9; }
+</style>
+</head>
+<body>
+  <header class="art-nav">
+    <a class="back" href="../../index.html">← <span data-fr="Accueil" data-en="Home">Accueil</span></a>
+    <div class="art-head">
+      <div class="tag" data-fr="Analyse · Séries de Fourier" data-en="Analysis · Fourier series">Analyse · Séries de Fourier</div>
+      <h1 data-fr="Fourier : le son décomposé" data-en="Fourier: sound decomposed">Fourier : le son décomposé</h1>
+    </div>
+    <div class="art-tools">
+      <button class="themebtn" type="button"></button>
+      <button class="langbtn" type="button">EN</button>
+    </div>
+  </header>
+
+  <main class="art-main">
+    <div class="stage-wrap">
+      <div class="stage">
+        <canvas id="cv"></canvas>
+        <div class="readouts">
+          <span class="pill" data-fr="harmoniques" data-en="harmonics">harmoniques</span><span class="pill"><b id="r-h">1</b></span>
+          <span class="pill" data-fr="erreur" data-en="error">erreur</span><span class="pill"><b id="r-err">—</b></span>
+        </div>
+        <div class="legend">
+          <span><i id="lg-sum"></i><span data-fr="somme partielle" data-en="partial sum">somme partielle</span></span>
+          <span><i style="background:#9aa0ad"></i><span data-fr="signal cible" data-en="target signal">signal cible</span></span>
+        </div>
+      </div>
+    </div>
+
+    <aside class="panel">
+      <div class="block" id="sim-controls"></div>
+
+      <div class="block">
+        <h3><span class="ic">∿</span><span data-fr="Le signal cible" data-en="The target signal">Le signal cible</span></h3>
+        <div class="seg" id="waves" data-tip-fr="Le signal qu’on cherche à reconstruire. Chacun a une « recette » d’harmoniques différente (le carré et le triangle n’utilisent que les harmoniques impaires)." data-tip-en="The signal we try to rebuild. Each has a different harmonic ‘recipe’ (square and triangle use only odd harmonics).">
+          <button data-w="square" class="on" data-fr="Carré" data-en="Square">Carré</button>
+          <button data-w="saw" data-fr="Dent de scie" data-en="Sawtooth">Dent de scie</button>
+          <button data-w="triangle" data-fr="Triangle" data-en="Triangle">Triangle</button>
+        </div>
+        <div class="ctrl" style="margin-top:16px" data-tip-fr="Fréquence de l’harmonique fondamentale (la note de base), en Hz. Elle fixe la hauteur du son que tu entends." data-tip-en="Frequency of the fundamental harmonic (the base note), in Hz. It sets the pitch of the sound you hear.">
+          <label><span data-fr="Fréquence fondamentale" data-en="Fundamental frequency">Fréquence fondamentale</span><span class="val" id="v-freq">220 Hz</span></label>
+          <input type="range" id="s-freq" min="80" max="600" step="10" value="220" />
+        </div>
+        <div class="btnrow" style="margin-top:4px">
+          <button class="mini primary" id="btn-listen" data-fr="🔊 Écouter" data-en="🔊 Listen">🔊 Écouter</button>
+        </div>
+      </div>
+
+      <div class="block">
+        <h3><span class="ic">∑</span><span data-fr="État" data-en="State">État</span></h3>
+        <div class="kv">
+          <span class="k" data-fr="Harmoniques utilisées" data-en="Harmonics used">Harmoniques utilisées</span><span class="v hot" id="k-h">1</span>
+          <span class="k" data-fr="Erreur quadratique" data-en="Mean-square error">Erreur quadratique</span><span class="v" id="k-err">—</span>
+          <span class="k" data-fr="Recette" data-en="Recipe">Recette</span><span class="v" id="k-recipe">—</span>
+        </div>
+      </div>
+
+      <div class="block lesson">
+        <h3><span class="ic">𝑓</span><span data-fr="La notion" data-en="The idea">La notion</span></h3>
+        <div class="step">
+          <span class="lab" data-fr="Intuition" data-en="Intuition">Intuition</span>
+          <div class="body" data-fr="Un son n’est qu’une vibration. L’idée géniale de Fourier : <strong>toute</strong> onde périodique, même anguleuse, est une <strong>somme d’ondes pures</strong> (des sinus) de fréquences multiples." data-en="A sound is just a vibration. Fourier’s brilliant idea: <strong>every</strong> periodic wave, even a jagged one, is a <strong>sum of pure waves</strong> (sines) at multiple frequencies." data-html="1"></div>
+        </div>
+        <div class="step">
+          <span class="lab" data-fr="Formule" data-en="Formula">Formule</span>
+          <div class="body" data-fr="On additionne la fondamentale et ses harmoniques (ω = 2πf), chacune avec son poids aₙ :" data-en="We add the fundamental and its harmonics (ω = 2πf), each with its weight aₙ:" data-html="1"></div>
+          <div class="fbox">f(t) = Σ<sub>n</sub> <span class="hot">aₙ</span> · sin(n·ω·t)</div>
+        </div>
+        <div class="step">
+          <span class="lab" data-fr="Détail" data-en="Detail">Détail</span>
+          <div class="body" data-fr="Pour un signal <strong>carré</strong>, seules les harmoniques impaires comptent, avec aₙ = 4⁄(πn). Plus on en ajoute, plus la somme colle au signal — sauf de petites oscillations près des sauts (phénomène de <strong>Gibbs</strong>)." data-en="For a <strong>square</strong> signal, only odd harmonics matter, with aₙ = 4⁄(πn). The more we add, the closer the sum hugs the signal — except small wiggles near the jumps (<strong>Gibbs</strong> phenomenon)." data-html="1"></div>
+        </div>
+        <p class="tip" data-fr="<b>Essaie :</b> avance en pas-à-pas pour ajouter les harmoniques une à une, puis clique « Écouter » : le timbre change à mesure que le signal s’enrichit." data-en="<b>Try it:</b> use Step to add harmonics one by one, then click ‘Listen’: the timbre changes as the signal gets richer." data-html="1"></p>
+      </div>
+    </aside>
+  </main>
+
+  <section class="feedback-wrap" id="feedback"></section>
+
+  <script src="../../assets/config.js"></script>
+  <script src="../../assets/common.js"></script>
+  <script src="../../assets/simkit.js"></script>
+  <script src="sim.js"></script>
+  <script src="../../assets/feedback.js"></script>
+</body>
+</html>

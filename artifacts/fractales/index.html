@@ -46,7 +46,7 @@
     <aside class="panel">
       <div class="block">
         <h3><span class="ic">◎</span><span data-fr="Ensemble" data-en="Set">Ensemble</span></h3>
-        <div class="seg" id="modes">
+        <div class="seg" id="modes" data-tip-fr="Mandelbrot : on balaie la constante c dans tout le plan. Julia : on fige c et on teste chaque point de départ z₀. Les deux découlent de la même formule z ↦ z² + c." data-tip-en="Mandelbrot: we sweep the constant c across the whole plane. Julia: we freeze c and test each starting point z₀. Both come from the same formula z ↦ z² + c.">
           <button data-mode="mandel" class="on" data-fr="Mandelbrot" data-en="Mandelbrot">Mandelbrot</button>
           <button data-mode="julia" data-fr="Julia" data-en="Julia">Julia</button>
         </div>
@@ -59,11 +59,11 @@
 
       <div class="block" id="julia-box" style="display:none">
         <h3><span class="ic">c</span><span data-fr="Constante de Julia" data-en="Julia constant">Constante de Julia</span></h3>
-        <div class="ctrl">
+        <div class="ctrl" data-tip-fr="Partie réelle de la constante c (axe horizontal). La changer déforme entièrement la fractale de Julia." data-tip-en="Real part of the constant c (horizontal axis). Changing it completely reshapes the Julia fractal.">
           <label><span>c — <span data-fr="partie réelle" data-en="real part">partie réelle</span></span><span class="val" id="v-cre">-0.40</span></label>
           <input type="range" id="s-cre" min="-1" max="1" step="0.005" value="-0.4" />
         </div>
-        <div class="ctrl">
+        <div class="ctrl" data-tip-fr="Partie imaginaire de la constante c (axe vertical). Près du bord de l’ensemble de Mandelbrot, les Julia sont les plus spectaculaires." data-tip-en="Imaginary part of the constant c (vertical axis). Near the edge of the Mandelbrot set, Julia sets are the most spectacular.">
           <label><span>c — <span data-fr="partie imaginaire" data-en="imaginary part">partie imaginaire</span></span><span class="val" id="v-cim">0.60</span></label>
           <input type="range" id="s-cim" min="-1" max="1" step="0.005" value="0.6" />
         </div>
@@ -77,11 +77,11 @@
 
       <div class="block">
         <h3><span class="ic">⚙</span><span data-fr="Rendu" data-en="Render">Rendu</span></h3>
-        <div class="ctrl">
+        <div class="ctrl" data-tip-fr="Combien de fois on applique la formule avant de décider qu’un point « ne s’échappe pas ». Plus c’est élevé, plus les détails fins apparaissent (mais le calcul est plus lourd). Augmente-le quand tu zoomes beaucoup." data-tip-en="How many times we apply the formula before deciding a point ‘does not escape’. Higher reveals finer detail (but is heavier to compute). Increase it when you zoom in deep.">
           <label><span data-fr="Itérations max" data-en="Max iterations">Itérations max</span><span class="val" id="v-iter">150</span></label>
           <input type="range" id="s-iter" min="40" max="500" step="10" value="150" />
         </div>
-        <div class="ctrl">
+        <div class="ctrl" data-tip-fr="Seule la couleur change : elle code la vitesse à laquelle chaque point file vers l’infini. Purement esthétique." data-tip-en="Only the colour changes: it encodes how fast each point races to infinity. Purely aesthetic.">
           <label><span data-fr="Palette" data-en="Palette">Palette</span></label>
           <div class="seg" id="palettes">
             <button data-pal="0" class="on" data-fr="Néon" data-en="Neon">Néon</button>
@@ -93,11 +93,20 @@
 
       <div class="block lesson">
         <h3><span class="ic">𝑓</span><span data-fr="La notion" data-en="The idea">La notion</span></h3>
-        <p data-fr="On travaille avec des <strong>nombres complexes</strong> z = a + b·i, qu’on place dans le plan. On répète sans fin la transformation z ↦ z² + c en partant de z₀ = 0." data-en="We work with <strong>complex numbers</strong> z = a + b·i placed in the plane. We endlessly repeat z ↦ z² + c starting from z₀ = 0." data-html="1"></p>
-        <div class="fbox">z<sub>n+1</sub> = z<sub>n</sub>² + <span class="hot">c</span></div>
-        <p data-fr="Pour chaque point c du plan : si la suite reste bornée, c appartient à l’<strong>ensemble de Mandelbrot</strong> (en sombre). Sinon, la couleur indique la <strong>vitesse de fuite</strong> vers l’infini." data-en="For each point c in the plane: if the sequence stays bounded, c belongs to the <strong>Mandelbrot set</strong> (dark). Otherwise, the colour shows how <strong>fast it escapes</strong> to infinity." data-html="1"></p>
-        <p data-fr="Un <strong>ensemble de Julia</strong>, c’est l’inverse : on fixe c et on regarde quels points de départ z₀ restent bornés. Chaque c donne une fractale différente." data-en="A <strong>Julia set</strong> is the reverse: fix c and look at which starting points z₀ stay bounded. Each c gives a different fractal." data-html="1"></p>
-        <p class="tip" data-fr="<b>Magie :</b> en zoomant, on retrouve sans fin des copies de la forme initiale. C’est l’<strong>auto-similarité</strong> des fractales." data-en="<b>Magic:</b> as you zoom, you keep finding copies of the whole shape. That’s the <strong>self-similarity</strong> of fractals." data-html="1"></p>
+        <div class="step">
+          <span class="lab" data-fr="Intuition" data-en="Intuition">Intuition</span>
+          <div class="body" data-fr="On place des <strong>nombres complexes</strong> z = a + b·i dans le plan, puis on répète sans fin une même opération en partant de z₀ = 0." data-en="We place <strong>complex numbers</strong> z = a + b·i in the plane, then endlessly repeat a single operation starting from z₀ = 0." data-html="1"></div>
+        </div>
+        <div class="step">
+          <span class="lab" data-fr="Formule" data-en="Formula">Formule</span>
+          <div class="body" data-fr="On élève au carré et on ajoute c, encore et encore :" data-en="We square and add c, over and over:" data-html="1"></div>
+          <div class="fbox">z<sub>n+1</sub> = z<sub>n</sub>² + <span class="hot">c</span></div>
+        </div>
+        <div class="step">
+          <span class="lab" data-fr="Détail" data-en="Detail">Détail</span>
+          <div class="body" data-fr="Si la suite reste <strong>bornée</strong>, le point est dans l’ensemble (en sombre) ; sinon la couleur mesure sa <strong>vitesse de fuite</strong>. Mandelbrot fait varier c ; Julia fige c et fait varier z₀." data-en="If the sequence stays <strong>bounded</strong>, the point is in the set (dark); otherwise the colour measures its <strong>escape speed</strong>. Mandelbrot varies c; Julia freezes c and varies z₀." data-html="1"></div>
+        </div>
+        <p class="tip" data-fr="<b>Magie :</b> en zoomant, on retrouve sans fin des copies de la forme entière — c’est l’<strong>auto-similarité</strong>. Pense à monter les itérations quand tu plonges profond." data-en="<b>Magic:</b> as you zoom, you keep finding copies of the whole shape — that’s <strong>self-similarity</strong>. Remember to raise the iterations when you dive deep." data-html="1"></p>
       </div>
     </aside>
   </main>
@@ -106,6 +115,7 @@
 
   <script src="../../assets/config.js"></script>
   <script src="../../assets/common.js"></script>
+  <script src="../../assets/simkit.js"></script>
   <script src="sim.js"></script>
   <script src="../../assets/feedback.js"></script>
 </body>

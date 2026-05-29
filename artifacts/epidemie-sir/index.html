@@ -46,38 +46,32 @@
     </div>
 
     <aside class="panel">
+      <div class="block" id="sim-controls"></div>
+
       <div class="block">
         <h3><span class="ic">📈</span><span data-fr="Courbe S · I · R" data-en="S · I · R curve">Courbe S · I · R</span></h3>
         <canvas id="chart" style="width:100%;height:150px;display:block"></canvas>
       </div>
 
       <div class="block">
-        <h3><span class="ic">▶</span><span data-fr="Commandes" data-en="Controls">Commandes</span></h3>
-        <div class="btnrow">
-          <button class="mini primary" id="btn-play" data-fr="Pause" data-en="Pause">Pause</button>
-          <button class="mini ghost" id="btn-reset" data-fr="Nouvelle épidémie" data-en="New outbreak">Nouvelle épidémie</button>
-        </div>
-      </div>
-
-      <div class="block">
         <h3><span class="ic">⚙</span><span data-fr="Les paramètres" data-en="Parameters">Les paramètres</span></h3>
-        <div class="ctrl">
+        <div class="ctrl" data-tip-fr="Nombre total d’individus dans la population simulée." data-tip-en="Total number of individuals in the simulated population.">
           <label><span data-fr="Population" data-en="Population">Population</span><span class="val" id="v-n">220</span></label>
           <input type="range" id="s-n" min="60" max="320" step="10" value="220" />
         </div>
-        <div class="ctrl">
+        <div class="ctrl" data-tip-fr="Contagiosité β : probabilité de transmission par jour lors d’un contact rapproché entre un sain et un infecté. Plus β est grand, plus la maladie se propage vite." data-tip-en="Contagiousness β: per-day transmission probability during close contact between a susceptible and an infected. The larger β, the faster it spreads.">
           <label><span data-fr="Contagiosité β" data-en="Contagiousness β">Contagiosité β</span><span class="val" id="v-beta">0.30</span></label>
           <input type="range" id="s-beta" min="0.05" max="0.6" step="0.01" value="0.3" />
         </div>
-        <div class="ctrl">
+        <div class="ctrl" data-tip-fr="Taux de guérison γ : fraction d’infectés qui guérissent par jour. La durée moyenne de la maladie vaut 1⁄γ jours." data-tip-en="Recovery rate γ: fraction of infected who recover per day. The average illness lasts 1⁄γ days.">
           <label><span data-fr="Guérison γ" data-en="Recovery γ">Guérison γ</span><span class="val" id="v-gamma">0.030</span></label>
           <input type="range" id="s-gamma" min="0.008" max="0.12" step="0.002" value="0.03" />
         </div>
-        <div class="ctrl">
+        <div class="ctrl" data-tip-fr="À quel point les individus se déplacent et se croisent. Plus la mobilité est forte, plus il y a de contacts… donc de contagion (« distanciation » = mobilité faible)." data-tip-en="How much individuals move and meet. Higher mobility means more contacts… hence more spread (“distancing” = low mobility).">
           <label><span data-fr="Mobilité" data-en="Mobility">Mobilité</span><span class="val" id="v-mob">60%</span></label>
           <input type="range" id="s-mob" min="0" max="100" step="5" value="60" />
         </div>
-        <div class="ctrl">
+        <div class="ctrl" data-tip-fr="Fraction de la population déjà immunisée au départ (vaccinés). Au-dessus du seuil 1−1⁄R₀, l’épidémie ne peut plus démarrer : c’est l’immunité collective." data-tip-en="Fraction of the population already immune at start (vaccinated). Above the threshold 1−1⁄R₀, the epidemic can no longer start: that’s herd immunity.">
           <label><span data-fr="Vaccinés au départ" data-en="Vaccinated at start">Vaccinés au départ</span><span class="val" id="v-vax">0%</span></label>
           <input type="range" id="s-vax" min="0" max="90" step="1" value="0" />
         </div>
@@ -95,11 +89,21 @@
 
       <div class="block lesson">
         <h3><span class="ic">𝑓</span><span data-fr="La notion" data-en="The idea">La notion</span></h3>
-        <p data-fr="Le <strong>modèle SIR</strong> répartit la population en trois compartiments : <strong>S</strong>ains (sensibles), <strong>I</strong>nfectés, <strong>R</strong>etirés (guéris/immunisés). Les gens passent de S → I → R." data-en="The <strong>SIR model</strong> splits the population into three compartments: <strong>S</strong>usceptible, <strong>I</strong>nfected, <strong>R</strong>emoved (recovered/immune). People move S → I → R." data-html="1"></p>
-        <div class="fbox">dS⁄dt = −β·S·I⁄N<br>dI⁄dt = β·S·I⁄N − γ·I<br>dR⁄dt = γ·I</div>
-        <p data-fr="Le nombre clé est <strong>R₀ = β ⁄ γ</strong> : le nombre moyen de personnes qu’un malade contamine. Si <strong>R₀ &gt; 1</strong>, l’épidémie explose ; si <strong>R₀ &lt; 1</strong>, elle s’éteint." data-en="The key number is <strong>R₀ = β ⁄ γ</strong>: the average number of people one sick person infects. If <strong>R₀ &gt; 1</strong>, the epidemic explodes; if <strong>R₀ &lt; 1</strong>, it dies out." data-html="1"></p>
-        <div class="fbox"><span data-fr="Seuil d’immunité collective" data-en="Herd-immunity threshold">Seuil d’immunité collective</span> = 1 − 1⁄R₀</div>
-        <p class="tip" data-fr="<b>Essaie :</b> monte la vaccination au-dessus du seuil affiché — l’épidémie n’arrive plus à démarrer. C’est l’<strong>immunité collective</strong>. Baisse β pour « aplatir la courbe »." data-en="<b>Try it:</b> raise vaccination above the shown threshold — the epidemic can no longer take off. That’s <strong>herd immunity</strong>. Lower β to “flatten the curve.”" data-html="1"></p>
+        <div class="step">
+          <span class="lab" data-fr="Intuition" data-en="Intuition">Intuition</span>
+          <div class="body" data-fr="On range chacun dans une de trois cases : <strong>S</strong>ain, <strong>I</strong>nfecté, ou <strong>R</strong>etiré (guéri/immunisé). Au fil des contacts, on passe de S → I → R." data-en="Everyone falls into one of three boxes: <strong>S</strong>usceptible, <strong>I</strong>nfected, or <strong>R</strong>emoved (recovered/immune). Through contacts, people move S → I → R." data-html="1"></div>
+        </div>
+        <div class="step">
+          <span class="lab" data-fr="Formule" data-en="Formula">Formule</span>
+          <div class="body" data-fr="Le modèle compte les échanges entre cases à chaque instant :" data-en="The model counts the flows between boxes at each instant:" data-html="1"></div>
+          <div class="fbox">dS⁄dt = −β·S·I⁄N<br>dI⁄dt = β·S·I⁄N − γ·I<br>dR⁄dt = γ·I</div>
+        </div>
+        <div class="step">
+          <span class="lab" data-fr="Détail" data-en="Detail">Détail</span>
+          <div class="body" data-fr="Le nombre clé est <strong>R₀ = β⁄γ</strong> : combien de personnes un seul malade contamine en moyenne. Si <strong>R₀ &gt; 1</strong>, l’épidémie explose ; si <strong>R₀ &lt; 1</strong>, elle s’éteint." data-en="The key number is <strong>R₀ = β⁄γ</strong>: how many people one sick person infects on average. If <strong>R₀ &gt; 1</strong>, the epidemic explodes; if <strong>R₀ &lt; 1</strong>, it dies out." data-html="1"></div>
+          <div class="fbox" data-fr="Seuil d’immunité collective = 1 − 1⁄R₀" data-en="Herd-immunity threshold = 1 − 1⁄R₀">Seuil d’immunité collective = 1 − 1⁄R₀</div>
+        </div>
+        <p class="tip" data-fr="<b>Essaie :</b> monte la vaccination au-dessus du seuil affiché → l’épidémie n’arrive plus à démarrer. Baisse β (ou la mobilité) pour « aplatir la courbe »." data-en="<b>Try it:</b> raise vaccination above the shown threshold → the epidemic can no longer start. Lower β (or mobility) to “flatten the curve.”" data-html="1"></p>
       </div>
     </aside>
   </main>
@@ -108,6 +112,7 @@
 
   <script src="../../assets/config.js"></script>
   <script src="../../assets/common.js"></script>
+  <script src="../../assets/simkit.js"></script>
   <script src="sim.js"></script>
   <script src="../../assets/feedback.js"></script>
 </body>
