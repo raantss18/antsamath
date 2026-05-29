@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Sharding · antsamath</title>
+<script>document.documentElement.dataset.theme=localStorage.getItem("antsamath-theme")||"light";document.documentElement.lang=localStorage.getItem("antsamath-lang")||"fr";</script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Lexend:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../assets/theme-a.css" />
+<link rel="stylesheet" href="../../assets/artifact.css" />
+<style>
+  body { --accent: #0E97A8; }
+  html[data-theme="dark"] body { --accent: #3CD6E8; }
+</style>
+</head>
+<body>
+  <header class="art-nav">
+    <a class="back" href="../../index.html">← <span data-fr="Accueil" data-en="Home">Accueil</span></a>
+    <div class="art-head">
+      <div class="tag" data-fr="Informatique · Systèmes distribués" data-en="Computer science · Distributed systems">Informatique · Systèmes distribués</div>
+      <h1 data-fr="Sharding d’une blockchain" data-en="Blockchain sharding">Sharding d’une blockchain</h1>
+    </div>
+    <div class="art-tools">
+      <button class="themebtn" type="button"></button>
+      <button class="langbtn" type="button">EN</button>
+    </div>
+  </header>
+
+  <main class="art-main">
+    <div class="stage-wrap">
+      <div class="stage">
+        <canvas id="cv"></canvas>
+        <div class="readouts">
+          <span class="pill">TPS <b id="r-tps">0</b></span>
+          <span class="pill" data-fr="en attente" data-en="backlog">en attente</span><span class="pill"><b id="r-back">0</b></span>
+        </div>
+        <div class="legend" id="legend"></div>
+      </div>
+    </div>
+
+    <aside class="panel">
+      <div class="block">
+        <h3><span class="ic">⬡</span><span data-fr="Le réseau" data-en="The network">Le réseau</span></h3>
+        <div class="ctrl">
+          <label><span data-fr="Nombre de shards K" data-en="Number of shards K">Nombre de shards K</span><span class="val" id="v-k">4</span></label>
+          <input type="range" id="s-k" min="1" max="8" step="1" value="4" />
+        </div>
+        <div class="ctrl">
+          <label><span data-fr="Nœuds (total)" data-en="Nodes (total)">Nœuds (total)</span><span class="val" id="v-nodes">64</span></label>
+          <input type="range" id="s-nodes" min="16" max="256" step="8" value="64" />
+        </div>
+        <div class="btnrow">
+          <button class="mini primary" id="btn-play" data-fr="Pause" data-en="Pause">Pause</button>
+          <button class="mini ghost" id="btn-reset" data-fr="Réinitialiser" data-en="Reset">Réinitialiser</button>
+        </div>
+      </div>
+
+      <div class="block">
+        <h3><span class="ic">≋</span><span data-fr="La charge" data-en="The load">La charge</span></h3>
+        <div class="ctrl">
+          <label><span data-fr="Transactions reçues / s" data-en="Incoming tx / s">Transactions reçues / s</span><span class="val" id="v-load">160</span></label>
+          <input type="range" id="s-load" min="10" max="500" step="10" value="160" />
+        </div>
+        <div class="ctrl">
+          <label><span data-fr="Transactions inter-shards" data-en="Cross-shard tx">Transactions inter-shards</span><span class="val" id="v-cross">15%</span></label>
+          <input type="range" id="s-cross" min="0" max="60" step="1" value="15" />
+        </div>
+      </div>
+
+      <div class="block">
+        <h3><span class="ic">∑</span><span data-fr="Performances" data-en="Performance">Performances</span></h3>
+        <div class="kv">
+          <span class="k" data-fr="Débit shardé" data-en="Sharded throughput">Débit shardé</span><span class="v hot" id="k-tps">— TPS</span>
+          <span class="k" data-fr="Débit mono-chaîne" data-en="Single-chain throughput">Débit mono-chaîne</span><span class="v" id="k-mono">— TPS</span>
+          <span class="k" data-fr="Accélération" data-en="Speed-up">Accélération</span><span class="v" id="k-speed">—</span>
+          <span class="k" data-fr="Nœuds par shard" data-en="Nodes per shard">Nœuds par shard</span><span class="v" id="k-nps">—</span>
+          <span class="k" data-fr="Corrompre 1 shard" data-en="Corrupt 1 shard">Corrompre 1 shard</span><span class="v" id="k-sec">—</span>
+        </div>
+      </div>
+
+      <div class="block lesson">
+        <h3><span class="ic">𝑓</span><span data-fr="La notion" data-en="The idea">La notion</span></h3>
+        <p data-fr="Une blockchain classique fait vérifier <strong>chaque</strong> transaction par <strong>tous</strong> les nœuds : très sûr, mais lent. Le <strong>sharding</strong> découpe le réseau en K sous-réseaux (les <em>shards</em>) qui travaillent <strong>en parallèle</strong>." data-en="A classic blockchain has <strong>every</strong> node verify <strong>every</strong> transaction: very safe, but slow. <strong>Sharding</strong> splits the network into K sub-networks (<em>shards</em>) working <strong>in parallel</strong>." data-html="1"></p>
+        <div class="fbox">TPS ≈ <span class="hot">K</span> × t<sub>shard</sub> × (1 − surcoût·c)</div>
+        <p data-fr="Le débit grimpe ~ linéairement avec K. Mais chaque shard n’est gardé que par <strong>N⁄K</strong> nœuds : il suffit de <strong>1⁄(2K)</strong> du réseau pour en corrompre un seul. C’est le <strong>trilemme</strong> : scalabilité, sécurité, décentralisation — on n’en a jamais trois pour le prix d’un." data-en="Throughput grows ~ linearly with K. But each shard is guarded by only <strong>N⁄K</strong> nodes: just <strong>1⁄(2K)</strong> of the network is enough to corrupt one. That’s the <strong>trilemma</strong>: scalability, security, decentralization — you never get all three for free." data-html="1"></p>
+        <p class="tip" data-fr="<b>Essaie :</b> monte K → le débit explose et la file se vide, mais « corrompre 1 shard » devient facile. Monte les transactions inter-shards → le gain s’effondre (coût de coordination)." data-en="<b>Try it:</b> raise K → throughput soars and the queue drains, but “corrupt 1 shard” gets easy. Raise cross-shard tx → the gain collapses (coordination cost)." data-html="1"></p>
+      </div>
+    </aside>
+  </main>
+
+  <section class="feedback-wrap" id="feedback"></section>
+
+  <script src="../../assets/config.js"></script>
+  <script src="../../assets/common.js"></script>
+  <script src="sim.js"></script>
+  <script src="../../assets/feedback.js"></script>
+</body>
+</html>

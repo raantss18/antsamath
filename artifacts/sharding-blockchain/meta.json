@@ -1,0 +1,10 @@
+{
+  "sketch": "shard",
+  "color": "#11B5C9",
+  "cat": "informatique",
+  "level": 3,
+  "formula": "TPS ≈ K × t",
+  "date": "2026-05-29",
+  "fr": { "title": "Sharding d’une blockchain", "desc": "Découpe le réseau en shards parallèles : le débit grimpe… mais la sécurité se dilue." },
+  "en": { "title": "Blockchain Sharding", "desc": "Split the network into parallel shards: throughput soars… but security dilutes." }
+}

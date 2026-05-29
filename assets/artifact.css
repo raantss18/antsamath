@@ -53,7 +53,7 @@
 /* ----- PANNEAU ----- */
 .panel { display: flex; flex-direction: column; gap: 16px; }
 .block { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 18px 18px 20px; }
-.block > h3 { font-family: var(--display); font-weight: 700; font-size: 16px; margin: 0 0 14px; display: flex; align-items: center; gap: 9px; letter-spacing: -.01em; }
+.block > h3 { font-family: var(--display); font-weight: 700; font-size: 16px; margin: 0 0 14px; display: flex; align-items: center; gap: 9px; letter-spacing: -.01em; white-space: nowrap; }
 .block > h3 .ic { width: 22px; height: 22px; border-radius: 7px; background: color-mix(in srgb, var(--accent) 16%, var(--card)); color: var(--accent); display: inline-grid; place-items: center; font-size: 13px; }
 
 /* contrôles */
@@ -97,3 +97,20 @@ input[type="range"]::-moz-range-thumb { width: 16px; height: 16px; border-radius
 .kv .v.hot { color: var(--accent); }
 .tip { font-size: 13px; line-height: 1.55; color: var(--ink-soft); border-left: 3px solid var(--accent); padding: 4px 0 4px 14px; margin-top: 4px; }
 .tip b { color: var(--ink); }
+
+/* ---------- NOTATION + FORUM (feedback partagé) ---------- */
+.feedback-wrap { max-width: 1320px; margin: 0 auto; padding: 4px clamp(14px, 4vw, 40px) 72px; display: grid; grid-template-columns: 340px 1fr; gap: 22px; align-items: start; }
+@media (max-width: 760px) { .feedback-wrap { grid-template-columns: 1fr; } }
+.stars { display: flex; gap: 6px; }
+.stars button { background: none; border: 0; padding: 0; cursor: pointer; line-height: 0; color: var(--line); transition: transform .12s, color .15s; }
+.stars button svg { width: 30px; height: 30px; display: block; }
+.stars button.fill { color: var(--accent); }
+.stars button:hover { transform: scale(1.18); }
+.rate-note { font-family: var(--mono); font-size: 13px; color: var(--ink-soft); margin-top: 14px; }
+.rate-note b { color: var(--accent); }
+.giscus-ph { font-size: 14px; line-height: 1.62; color: var(--ink-soft); }
+.giscus-ph code { font-family: var(--mono); font-size: 12.5px; background: var(--bg-2); padding: 2px 6px; border-radius: 6px; color: var(--ink); }
+.giscus-ph .ph-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+.giscus-ph a.pill-link { font-family: var(--mono); font-size: 13px; font-weight: 700; padding: 9px 15px; border-radius: 999px; border: 1.5px solid var(--line); color: var(--ink); transition: all .18s; }
+.giscus-ph a.pill-link:hover { border-color: var(--accent); color: var(--accent); }
+.giscus-mount { min-height: 40px; }

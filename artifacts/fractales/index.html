@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Fractales · antsamath</title>
+<script>document.documentElement.dataset.theme=localStorage.getItem("antsamath-theme")||"light";document.documentElement.lang=localStorage.getItem("antsamath-lang")||"fr";</script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Lexend:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../assets/theme-a.css" />
+<link rel="stylesheet" href="../../assets/artifact.css" />
+<style>
+  body { --accent: #6B4CFF; }
+  html[data-theme="dark"] body { --accent: #9D86FF; }
+  .stage { cursor: crosshair; }
+</style>
+</head>
+<body>
+  <header class="art-nav">
+    <a class="back" href="../../index.html">← <span data-fr="Accueil" data-en="Home">Accueil</span></a>
+    <div class="art-head">
+      <div class="tag" data-fr="Géométrie · Nombres complexes" data-en="Geometry · Complex numbers">Géométrie · Nombres complexes</div>
+      <h1 data-fr="Fractales de Mandelbrot" data-en="Mandelbrot fractals">Fractales de Mandelbrot</h1>
+    </div>
+    <div class="art-tools">
+      <button class="themebtn" type="button"></button>
+      <button class="langbtn" type="button">EN</button>
+    </div>
+  </header>
+
+  <main class="art-main">
+    <div class="stage-wrap">
+      <div class="stage">
+        <canvas id="cv"></canvas>
+        <div class="readouts">
+          <span class="pill" data-fr="zoom" data-en="zoom">zoom</span><span class="pill"><b id="r-zoom">×1</b></span>
+          <span class="pill" data-fr="itér." data-en="iter.">itér.</span><span class="pill"><b id="r-iter">150</b></span>
+        </div>
+        <div class="legend">
+          <span id="hint" data-fr="molette = zoom · glisser = déplacer · clic = zoom avant" data-en="wheel = zoom · drag = pan · click = zoom in">molette = zoom · glisser = déplacer · clic = zoom avant</span>
+        </div>
+      </div>
+    </div>
+
+    <aside class="panel">
+      <div class="block">
+        <h3><span class="ic">◎</span><span data-fr="Ensemble" data-en="Set">Ensemble</span></h3>
+        <div class="seg" id="modes">
+          <button data-mode="mandel" class="on" data-fr="Mandelbrot" data-en="Mandelbrot">Mandelbrot</button>
+          <button data-mode="julia" data-fr="Julia" data-en="Julia">Julia</button>
+        </div>
+        <div class="btnrow" style="margin-top:14px">
+          <button class="mini ghost" id="btn-in">＋</button>
+          <button class="mini ghost" id="btn-out">－</button>
+          <button class="mini ghost" id="btn-reset" data-fr="Recentrer" data-en="Reset view">Recentrer</button>
+        </div>
+      </div>
+
+      <div class="block" id="julia-box" style="display:none">
+        <h3><span class="ic">c</span><span data-fr="Constante de Julia" data-en="Julia constant">Constante de Julia</span></h3>
+        <div class="ctrl">
+          <label><span>c — <span data-fr="partie réelle" data-en="real part">partie réelle</span></span><span class="val" id="v-cre">-0.40</span></label>
+          <input type="range" id="s-cre" min="-1" max="1" step="0.005" value="-0.4" />
+        </div>
+        <div class="ctrl">
+          <label><span>c — <span data-fr="partie imaginaire" data-en="imaginary part">partie imaginaire</span></span><span class="val" id="v-cim">0.60</span></label>
+          <input type="range" id="s-cim" min="-1" max="1" step="0.005" value="0.6" />
+        </div>
+        <div class="seg" id="julia-presets">
+          <button data-c="-0.4,0.6">−0.4 + 0.6i</button>
+          <button data-c="0.285,0.01">0.285 + 0.01i</button>
+          <button data-c="-0.8,0.156">−0.8 + 0.156i</button>
+          <button data-c="-0.123,0.745">−0.123 + 0.745i</button>
+        </div>
+      </div>
+
+      <div class="block">
+        <h3><span class="ic">⚙</span><span data-fr="Rendu" data-en="Render">Rendu</span></h3>
+        <div class="ctrl">
+          <label><span data-fr="Itérations max" data-en="Max iterations">Itérations max</span><span class="val" id="v-iter">150</span></label>
+          <input type="range" id="s-iter" min="40" max="500" step="10" value="150" />
+        </div>
+        <div class="ctrl">
+          <label><span data-fr="Palette" data-en="Palette">Palette</span></label>
+          <div class="seg" id="palettes">
+            <button data-pal="0" class="on" data-fr="Néon" data-en="Neon">Néon</button>
+            <button data-pal="1" data-fr="Feu" data-en="Fire">Feu</button>
+            <button data-pal="2" data-fr="Océan" data-en="Ocean">Océan</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="block lesson">
+        <h3><span class="ic">𝑓</span><span data-fr="La notion" data-en="The idea">La notion</span></h3>
+        <p data-fr="On travaille avec des <strong>nombres complexes</strong> z = a + b·i, qu’on place dans le plan. On répète sans fin la transformation z ↦ z² + c en partant de z₀ = 0." data-en="We work with <strong>complex numbers</strong> z = a + b·i placed in the plane. We endlessly repeat z ↦ z² + c starting from z₀ = 0." data-html="1"></p>
+        <div class="fbox">z<sub>n+1</sub> = z<sub>n</sub>² + <span class="hot">c</span></div>
+        <p data-fr="Pour chaque point c du plan : si la suite reste bornée, c appartient à l’<strong>ensemble de Mandelbrot</strong> (en sombre). Sinon, la couleur indique la <strong>vitesse de fuite</strong> vers l’infini." data-en="For each point c in the plane: if the sequence stays bounded, c belongs to the <strong>Mandelbrot set</strong> (dark). Otherwise, the colour shows how <strong>fast it escapes</strong> to infinity." data-html="1"></p>
+        <p data-fr="Un <strong>ensemble de Julia</strong>, c’est l’inverse : on fixe c et on regarde quels points de départ z₀ restent bornés. Chaque c donne une fractale différente." data-en="A <strong>Julia set</strong> is the reverse: fix c and look at which starting points z₀ stay bounded. Each c gives a different fractal." data-html="1"></p>
+        <p class="tip" data-fr="<b>Magie :</b> en zoomant, on retrouve sans fin des copies de la forme initiale. C’est l’<strong>auto-similarité</strong> des fractales." data-en="<b>Magic:</b> as you zoom, you keep finding copies of the whole shape. That’s the <strong>self-similarity</strong> of fractals." data-html="1"></p>
+      </div>
+    </aside>
+  </main>
+
+  <section class="feedback-wrap" id="feedback"></section>
+
+  <script src="../../assets/config.js"></script>
+  <script src="../../assets/common.js"></script>
+  <script src="sim.js"></script>
+  <script src="../../assets/feedback.js"></script>
+</body>
+</html>

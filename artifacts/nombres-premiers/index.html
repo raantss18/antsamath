@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Nombres premiers · antsamath</title>
+<script>document.documentElement.dataset.theme=localStorage.getItem("antsamath-theme")||"light";document.documentElement.lang=localStorage.getItem("antsamath-lang")||"fr";</script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Lexend:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../assets/theme-a.css" />
+<link rel="stylesheet" href="../../assets/artifact.css" />
+<style>
+  body { --accent: #4F5BE0; }
+  html[data-theme="dark"] body { --accent: #8B97FF; }
+</style>
+</head>
+<body>
+  <header class="art-nav">
+    <a class="back" href="../../index.html">← <span data-fr="Accueil" data-en="Home">Accueil</span></a>
+    <div class="art-head">
+      <div class="tag" data-fr="Nombres · Arithmétique" data-en="Numbers · Arithmetic">Nombres · Arithmétique</div>
+      <h1 data-fr="Nombres premiers" data-en="Prime numbers">Nombres premiers</h1>
+    </div>
+    <div class="art-tools">
+      <button class="themebtn" type="button"></button>
+      <button class="langbtn" type="button">EN</button>
+    </div>
+  </header>
+
+  <main class="art-main">
+    <div class="stage-wrap">
+      <div class="stage">
+        <canvas id="cv"></canvas>
+        <div class="readouts">
+          <span class="pill" data-fr="premiers" data-en="primes">premiers</span><span class="pill"><b id="r-count">0</b></span>
+          <span class="pill" data-fr="dernier" data-en="last">dernier</span><span class="pill"><b id="r-last">—</b></span>
+        </div>
+        <div class="legend" id="legend"></div>
+      </div>
+    </div>
+
+    <aside class="panel">
+      <div class="block">
+        <h3><span class="ic">▦</span><span data-fr="La vue" data-en="The view">La vue</span></h3>
+        <div class="seg" id="views">
+          <button data-v="sieve" class="on" data-fr="Crible d’Ératosthène" data-en="Sieve of Eratosthenes">Crible d’Ératosthène</button>
+          <button data-v="ulam" data-fr="Spirale d’Ulam" data-en="Ulam spiral">Spirale d’Ulam</button>
+        </div>
+        <div class="ctrl" style="margin-top:14px">
+          <label><span data-fr="Jusqu’à n" data-en="Up to n">Jusqu’à n</span><span class="val" id="v-n">289</span></label>
+          <input type="range" id="s-n" min="49" max="961" step="4" value="289" />
+        </div>
+        <div class="ctrl">
+          <label><span data-fr="Vitesse" data-en="Speed">Vitesse</span><span class="val" id="v-speed">×4</span></label>
+          <input type="range" id="s-speed" min="1" max="40" step="1" value="4" />
+        </div>
+        <div class="btnrow">
+          <button class="mini primary" id="btn-play" data-fr="Pause" data-en="Pause">Pause</button>
+          <button class="mini ghost" id="btn-reset" data-fr="Recommencer" data-en="Restart">Recommencer</button>
+        </div>
+      </div>
+
+      <div class="block">
+        <h3><span class="ic">∑</span><span data-fr="Décompte" data-en="Count">Décompte</span></h3>
+        <div class="kv">
+          <span class="k" data-fr="Premiers trouvés" data-en="Primes found">Premiers trouvés</span><span class="v hot" id="k-count">0</span>
+          <span class="k" data-fr="Dernier premier" data-en="Last prime">Dernier premier</span><span class="v" id="k-last">—</span>
+          <span class="k" data-fr="Densité réelle" data-en="Actual density">Densité réelle</span><span class="v" id="k-dens">—</span>
+          <span class="k">≈ 1 ⁄ ln n</span><span class="v" id="k-approx">—</span>
+        </div>
+      </div>
+
+      <div class="block lesson">
+        <h3><span class="ic">𝑓</span><span data-fr="La notion" data-en="The idea">La notion</span></h3>
+        <p data-fr="Un nombre <strong>premier</strong> n’a que deux diviseurs : 1 et lui-même (2, 3, 5, 7, 11…). Ce sont les « briques » de tous les autres nombres par multiplication." data-en="A <strong>prime</strong> number has exactly two divisors: 1 and itself (2, 3, 5, 7, 11…). They are the building blocks of every other number by multiplication." data-html="1"></p>
+        <p id="view-note"></p>
+        <div class="fbox">π(n) ≈ <span class="hot">n ⁄ ln n</span></div>
+        <p class="tip" data-fr="<b>Étonnant :</b> les premiers se raréfient (densité ≈ 1⁄ln n) mais ne s’arrêtent jamais — Euclide l’a prouvé il y a 2 300 ans. La spirale d’Ulam révèle d’étranges diagonales." data-en="<b>Surprising:</b> primes thin out (density ≈ 1⁄ln n) but never stop — Euclid proved it 2,300 years ago. Ulam’s spiral reveals strange diagonals." data-html="1"></p>
+      </div>
+    </aside>
+  </main>
+
+  <section class="feedback-wrap" id="feedback"></section>
+
+  <script src="../../assets/config.js"></script>
+  <script src="../../assets/common.js"></script>
+  <script src="sim.js"></script>
+  <script src="../../assets/feedback.js"></script>
+</body>
+</html>

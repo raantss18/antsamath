@@ -1,0 +1,10 @@
+{
+  "sketch": "fractal",
+  "color": "#7C5CFF",
+  "cat": "geometrie",
+  "level": 3,
+  "formula": "z ↦ z² + c",
+  "date": "2026-05-29",
+  "fr": { "title": "Fractales de Mandelbrot", "desc": "Zoome à l’infini dans l’ensemble de Mandelbrot et explore les ensembles de Julia." },
+  "en": { "title": "Mandelbrot Fractals", "desc": "Zoom forever into the Mandelbrot set and explore Julia sets." }
+}

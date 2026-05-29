@@ -62,7 +62,10 @@
           (opts.showVisits && visits ? '<span class="visits">' + visits + ' ▸</span>' : '') +
         '</div>' +
       '</div>';
-    if (m.sketch && window.mountSketch) mountSketch(a.querySelector("canvas"), m.sketch, m.color || "#FF6B3D", { fps: 30 });
+    if (m.sketch && window.mountSketch) {
+      try { mountSketch(a.querySelector("canvas"), m.sketch, m.color || "#FF6B3D", { fps: 30, hoverOnly: true }); }
+      catch (e) { /* vignette non bloquante */ }
+    }
     return a;
   }
   function esc(s) { return String(s || "").replace(/"/g, "&quot;"); }

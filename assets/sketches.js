@@ -349,6 +349,59 @@
       };
     },
 
+    /* 14 — projectile (parabole + bille) */
+    projectile(ctx, color) {
+      let t = 0;
+      return (w, h) => {
+        ctx.clearRect(0, 0, w, h); t += 0.012; if (t > 1) t = 0;
+        const g = h * 0.84, x0 = w * 0.1, x1 = w * 0.9, H = g - h * 0.18;
+        ctx.strokeStyle = color; ctx.globalAlpha = 0.25; ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(0, g); ctx.lineTo(w, g); ctx.stroke();
+        ctx.globalAlpha = 0.5; ctx.lineWidth = 2; ctx.setLineDash([4, 4]); ctx.beginPath();
+        for (let i = 0; i <= 40; i++) { const u = i / 40, x = x0 + (x1 - x0) * u, y = g - 4 * H * u * (1 - u) * (H / g + 0.4); i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }
+        ctx.stroke(); ctx.setLineDash([]);
+        const u = t, x = x0 + (x1 - x0) * u, y = g - 4 * H * u * (1 - u) * (H / g + 0.4);
+        ctx.globalAlpha = 1; ctx.fillStyle = color; ctx.beginPath(); ctx.arc(x, y, 4.5, 0, TAU); ctx.fill();
+        ctx.globalAlpha = 1;
+      };
+    },
+
+    /* 15 — roue d'Archimède (polygone → cercle) */
+    piwheel(ctx, color) {
+      let f = 0, n = 3;
+      return (w, h) => {
+        f++; if (f % 18 === 0) { n++; if (n > 26) n = 3; }
+        ctx.clearRect(0, 0, w, h);
+        const cx = w / 2, cy = h / 2, R = Math.min(w, h) * 0.36;
+        ctx.strokeStyle = color; ctx.globalAlpha = 0.3; ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.arc(cx, cy, R, 0, TAU); ctx.stroke();
+        ctx.globalAlpha = 0.95; ctx.lineWidth = 2; ctx.beginPath();
+        for (let i = 0; i <= n; i++) { const a = -Math.PI / 2 + i / n * TAU; const x = cx + Math.cos(a) * R, y = cy + Math.sin(a) * R; i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }
+        ctx.stroke();
+        ctx.fillStyle = color;
+        for (let i = 0; i < n; i++) { const a = -Math.PI / 2 + i / n * TAU; ctx.beginPath(); ctx.arc(cx + Math.cos(a) * R, cy + Math.sin(a) * R, 2, 0, TAU); ctx.fill(); }
+        ctx.globalAlpha = 1;
+      };
+    },
+
+    /* 16 — shards (grappes de nœuds) */
+    shard(ctx, color) {
+      const K = 3, clusters = [];
+      for (let k = 0; k < K; k++) clusters.push({ cx: 0.23 + 0.27 * k, cy: 0.5, nodes: Array.from({ length: 5 }, () => ({ a: Math.random() * TAU, r: 0.05 + Math.random() * 0.05, sp: 0.004 + Math.random() * 0.006 })) });
+      return (w, h) => {
+        ctx.clearRect(0, 0, w, h);
+        for (let k = 0; k < K; k++) {
+          const c = clusters[k], cx = c.cx * w, cy = c.cy * h;
+          const pts = c.nodes.map(nd => { nd.a += nd.sp; return [cx + Math.cos(nd.a) * nd.r * w, cy + Math.sin(nd.a) * nd.r * h]; });
+          ctx.strokeStyle = color; ctx.globalAlpha = 0.22; ctx.lineWidth = 1;
+          for (let i = 0; i < pts.length; i++) for (let j = i + 1; j < pts.length; j++) { ctx.beginPath(); ctx.moveTo(pts[i][0], pts[i][1]); ctx.lineTo(pts[j][0], pts[j][1]); ctx.stroke(); }
+          ctx.globalAlpha = 0.9; ctx.fillStyle = color;
+          for (const p of pts) { ctx.beginPath(); ctx.arc(p[0], p[1], 2.6, 0, TAU); ctx.fill(); }
+        }
+        ctx.globalAlpha = 1;
+      };
+    },
+
     /* HÉROS A — Lissajous discrets multicolores */
     heroLissajous(ctx, colors) {
       let t = 0;
@@ -393,14 +446,22 @@
     }
   };
 
-  /* Monte un sketch sur un canvas : gère dpr, pause hors-écran, throttle. */
+  /* Monte un sketch sur un canvas. Options :
+     - fps : images/s (def 30)
+     - hoverOnly : au repos une image fixe « posée » ; n'anime qu'au survol
+       (indispensable pour l'accueil : évite des dizaines de canvases animés). */
   function mountSketch(canvas, name, color, opts) {
     opts = opts || {};
     const ctx = canvas.getContext("2d");
     const fps = opts.fps || 30, interval = 1000 / fps;
     const reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    let cssW = 0, cssH = 0, last = 0, raf = 0, visible = true;
+    const hoverOnly = !!opts.hoverOnly;
+    let cssW = 0, cssH = 0, last = 0, raf = 0, visible = true, hovering = false, primed = false;
 
+    if (!Sketches[name]) return { stop() {} };
+    const frame = Sketches[name](ctx, color);
+
+    function prime() { if (primed || !cssW) return; primed = true; for (let i = 0; i < 60; i++) frame(cssW, cssH); }
     function resize() {
       const r = canvas.getBoundingClientRect();
       if (!r.width || !r.height) return;
@@ -409,30 +470,33 @@
       canvas.height = Math.round(r.height * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       cssW = r.width; cssH = r.height;
+      if (hoverOnly || reduce) { primed = false; prime(); }
     }
     resize();
-    const frame = Sketches[name](ctx, color);
 
-    if (reduce) {
-      let done = false;
-      const run = () => { if (done || !cssW) { resize(); if (!cssW) return; } done = true; for (let i = 0; i < 90; i++) frame(cssW, cssH); };
-      run();
-      const ro = new ResizeObserver(() => { if (!done) run(); });
-      ro.observe(canvas);
-      return { stop() { ro.disconnect(); } };
-    }
-
+    function shouldRun() { return visible && !reduce && (hoverOnly ? hovering : true); }
     function loop(ts) {
+      if (!shouldRun()) { raf = 0; return; }
       raf = requestAnimationFrame(loop);
-      if (!visible || !cssW) return;
+      if (!cssW) return;
       if (ts - last < interval) return;
-      last = ts;
-      frame(cssW, cssH);
+      last = ts; frame(cssW, cssH);
     }
-    raf = requestAnimationFrame(loop);
+    function kick() { if (!raf && shouldRun()) raf = requestAnimationFrame(loop); }
+
     const ro = new ResizeObserver(resize); ro.observe(canvas);
-    const io = new IntersectionObserver(es => { visible = es[0].isIntersecting; }, { threshold: 0.01 });
+    const io = new IntersectionObserver(es => { visible = es[0].isIntersecting; if (visible) kick(); }, { threshold: 0.01 });
     io.observe(canvas);
+
+    let hoverTarget = null;
+    if (hoverOnly) {
+      hoverTarget = canvas.closest(".card") || canvas;
+      hoverTarget.addEventListener("pointerenter", () => { hovering = true; kick(); });
+      hoverTarget.addEventListener("pointerleave", () => { hovering = false; });
+    } else if (!reduce) {
+      kick();
+    }
+
     return { stop() { cancelAnimationFrame(raf); ro.disconnect(); io.disconnect(); } };
   }
 

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Approximer π · antsamath</title>
+<script>document.documentElement.dataset.theme=localStorage.getItem("antsamath-theme")||"light";document.documentElement.lang=localStorage.getItem("antsamath-lang")||"fr";</script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Lexend:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../assets/theme-a.css" />
+<link rel="stylesheet" href="../../assets/artifact.css" />
+<style>
+  body { --accent: #C9920E; }
+  html[data-theme="dark"] body { --accent: #F4C20D; }
+</style>
+</head>
+<body>
+  <header class="art-nav">
+    <a class="back" href="../../index.html">← <span data-fr="Accueil" data-en="Home">Accueil</span></a>
+    <div class="art-head">
+      <div class="tag" data-fr="Nombres · Une constante célèbre" data-en="Numbers · A famous constant">Nombres · Une constante célèbre</div>
+      <h1 data-fr="Approximer π" data-en="Approximating π">Approximer π</h1>
+    </div>
+    <div class="art-tools">
+      <button class="themebtn" type="button"></button>
+      <button class="langbtn" type="button">EN</button>
+    </div>
+  </header>
+
+  <main class="art-main">
+    <div class="stage-wrap">
+      <div class="stage">
+        <canvas id="cv"></canvas>
+        <div class="readouts">
+          <span class="pill" data-fr="estimation" data-en="estimate">estimation</span><span class="pill"><b id="r-est">—</b></span>
+          <span class="pill">π <b id="r-pi">3.14159</b></span>
+        </div>
+        <div class="legend" id="legend"></div>
+      </div>
+    </div>
+
+    <aside class="panel">
+      <div class="block">
+        <h3><span class="ic">∿</span><span data-fr="La méthode" data-en="The method">La méthode</span></h3>
+        <div class="seg" id="methods">
+          <button data-m="archi" class="on" data-fr="Archimède" data-en="Archimedes">Archimède</button>
+          <button data-m="leibniz" data-fr="Leibniz" data-en="Leibniz">Leibniz</button>
+          <button data-m="mc" data-fr="Monte Carlo" data-en="Monte Carlo">Monte Carlo</button>
+        </div>
+        <div class="ctrl" style="margin-top:14px">
+          <label><span data-fr="Vitesse" data-en="Speed">Vitesse</span><span class="val" id="v-speed">×1</span></label>
+          <input type="range" id="s-speed" min="1" max="20" step="1" value="1" />
+        </div>
+        <div class="btnrow">
+          <button class="mini primary" id="btn-play" data-fr="Pause" data-en="Pause">Pause</button>
+          <button class="mini ghost" id="btn-reset" data-fr="Relancer" data-en="Restart">Relancer</button>
+        </div>
+      </div>
+
+      <div class="block">
+        <h3><span class="ic">∑</span><span data-fr="Convergence" data-en="Convergence">Convergence</span></h3>
+        <div class="kv">
+          <span class="k" id="k-step-lab" data-fr="Étape" data-en="Step">Étape</span><span class="v" id="k-step">—</span>
+          <span class="k" data-fr="Estimation" data-en="Estimate">Estimation</span><span class="v hot" id="k-est">—</span>
+          <span class="k" data-fr="Erreur" data-en="Error">Erreur</span><span class="v" id="k-err">—</span>
+        </div>
+      </div>
+
+      <div class="block lesson">
+        <h3><span class="ic">𝑓</span><span data-fr="La notion" data-en="The idea">La notion</span></h3>
+        <p data-fr="π relie le tour d’un cercle à son diamètre. C’est un nombre <strong>irrationnel</strong> : impossible à écrire exactement. On ne peut que l’<strong>approcher</strong> — et il existe mille façons de le faire." data-en="π links a circle’s perimeter to its diameter. It is an <strong>irrational</strong> number: impossible to write exactly. We can only <strong>approximate</strong> it — and there are countless ways." data-html="1"></p>
+        <div class="fbox" id="f-method">—</div>
+        <p id="method-note"></p>
+        <p class="tip" data-fr="<b>Compare :</b> Archimède est très efficace, Monte Carlo est lent mais joli, et la série de Leibniz converge… extrêmement lentement !" data-en="<b>Compare:</b> Archimedes is very efficient, Monte Carlo is slow but pretty, and Leibniz’s series converges… extremely slowly!" data-html="1"></p>
+      </div>
+    </aside>
+  </main>
+
+  <section class="feedback-wrap" id="feedback"></section>
+
+  <script src="../../assets/config.js"></script>
+  <script src="../../assets/common.js"></script>
+  <script src="sim.js"></script>
+  <script src="../../assets/feedback.js"></script>
+</body>
+</html>

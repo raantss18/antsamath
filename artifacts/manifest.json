@@ -1,5 +1,10 @@
 [
   "monte-carlo-aire",
   "double-pendule",
-  "epidemie-sir"
+  "epidemie-sir",
+  "fractales",
+  "chute-libre",
+  "approximation-pi",
+  "nombres-premiers",
+  "sharding-blockchain"
 ]

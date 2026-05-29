@@ -1,0 +1,10 @@
+{
+  "sketch": "primes",
+  "color": "#5A6CFF",
+  "cat": "nombres",
+  "level": 2,
+  "formula": "π(n) ~ n ⁄ ln n",
+  "date": "2026-05-29",
+  "fr": { "title": "Générateur de nombres premiers", "desc": "Le crible d’Ératosthène et la spirale d’Ulam révèlent l’ordre caché des premiers." },
+  "en": { "title": "Prime Number Generator", "desc": "The Sieve of Eratosthenes and Ulam’s spiral reveal the hidden order of primes." }
+}

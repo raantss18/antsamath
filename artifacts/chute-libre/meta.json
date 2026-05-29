@@ -1,0 +1,10 @@
+{
+  "sketch": "projectile",
+  "color": "#2E8BFF",
+  "cat": "dynamique",
+  "level": 1,
+  "formula": "R = v₀²·sin2θ ⁄ g",
+  "date": "2026-05-29",
+  "fr": { "title": "Chute libre & projectiles", "desc": "Lance un projectile : angle, vitesse, gravité, résistance de l’air — et observe la parabole." },
+  "en": { "title": "Free Fall & Projectiles", "desc": "Launch a projectile: angle, speed, gravity, air drag — and watch the parabola." }
+}

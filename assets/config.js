@@ -22,6 +22,20 @@ window.CONFIG = {
   topCount: 4,   // nb de cartes dans « Top simulations »
   newCount: 6,   // nb de cartes dans « Nouveau »
 
+  // ─── FORUM / DISCUSSION (Giscus, adossé aux GitHub Discussions) ───
+  // Pour activer le forum sous chaque simulation :
+  //  1. Rends le dépôt public et active l'onglet "Discussions" sur GitHub.
+  //  2. Installe l'app giscus : https://github.com/apps/giscus
+  //  3. Va sur https://giscus.app, choisis ton dépôt → il te donne
+  //     repoId et categoryId. Recopie-les ici. (mapping = "specific",
+  //     chaque simulation a son propre fil via son identifiant de dossier.)
+  giscus: {
+    repo: "",          // ex: "antsamath/antsamath.github.io"
+    repoId: "",        // ex: "R_kgD..."
+    category: "General",
+    categoryId: ""     // ex: "DIC_kwD..."
+  },
+
   // Catégories proposées dans les filtres (doivent matcher meta.cat)
   cats: [
     { id: "all",       fr: "Tout",         en: "All" },
@@ -29,6 +43,7 @@ window.CONFIG = {
     { id: "geometrie", fr: "Géométrie",    en: "Geometry" },
     { id: "probas",    fr: "Probabilités", en: "Probability" },
     { id: "dynamique", fr: "Dynamique",    en: "Dynamics" },
+    { id: "informatique", fr: "Informatique", en: "Computer science" },
     { id: "nombres",   fr: "Nombres",      en: "Numbers" }
   ]
 };

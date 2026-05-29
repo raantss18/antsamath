@@ -1,0 +1,10 @@
+{
+  "sketch": "piwheel",
+  "color": "#F4C20D",
+  "cat": "nombres",
+  "level": 2,
+  "formula": "π = 3.14159…",
+  "date": "2026-05-29",
+  "fr": { "title": "Approximer π", "desc": "Trois méthodes historiques pour estimer π : Archimède, Leibniz et Monte Carlo." },
+  "en": { "title": "Approximating π", "desc": "Three historical methods to estimate π: Archimedes, Leibniz and Monte Carlo." }
+}
