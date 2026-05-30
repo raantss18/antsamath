@@ -1,0 +1,10 @@
+{
+  "sketch": "takeoff",
+  "color": "#3B82C4",
+  "cat": "dynamique",
+  "level": 2,
+  "formula": "L = ½·ρ·v²·S·C_L",
+  "date": "2026-05-30",
+  "fr": { "title": "Décollage d’un avion", "desc": "Portance, traînée, poussée : à quelle vitesse l’avion quitte-t-il le sol ? La physique du décollage, réglable." },
+  "en": { "title": "Aircraft Takeoff", "desc": "Lift, drag, thrust: at what speed does the plane leave the ground? The physics of takeoff, adjustable." }
+}

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Décollage · antsamath</title>
+<script>document.documentElement.dataset.theme=localStorage.getItem("antsamath-theme")||"light";document.documentElement.lang=localStorage.getItem("antsamath-lang")||"fr";</script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Lexend:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../assets/theme-a.css" />
+<link rel="stylesheet" href="../../assets/artifact.css" />
+<style>
+  body { --accent: #2F77BE; }
+  html[data-theme="dark"] body { --accent: #5AA6EC; }
+</style>
+</head>
+<body>
+  <header class="art-nav">
+    <a class="back" href="../../index.html">← <span data-fr="Accueil" data-en="Home">Accueil</span></a>
+    <div class="art-head">
+      <div class="tag" data-fr="Dynamique · Aérodynamique" data-en="Dynamics · Aerodynamics">Dynamique · Aérodynamique</div>
+      <h1 data-fr="Décollage d’un avion" data-en="Aircraft takeoff">Décollage d’un avion</h1>
+    </div>
+    <div class="art-tools">
+      <button class="themebtn" type="button"></button>
+      <button class="langbtn" type="button">EN</button>
+    </div>
+  </header>
+
+  <main class="art-main">
+    <div class="stage-wrap">
+      <div class="stage">
+        <canvas id="cv"></canvas>
+        <div class="readouts">
+          <span class="pill">v <b id="r-v">0</b></span>
+          <span class="pill" data-fr="portance" data-en="lift">portance</span><span class="pill"><b id="r-lift">0%</b></span>
+          <span class="pill" id="pill-state"><b id="r-state">—</b></span>
+        </div>
+        <div class="legend" id="legend"></div>
+      </div>
+    </div>
+
+    <aside class="panel">
+      <div class="block" id="sim-controls"></div>
+
+      <div class="block">
+        <h3><span class="ic">✈</span><span data-fr="L’avion" data-en="The aircraft">L’avion</span></h3>
+        <div class="ctrl" data-tip-fr="Masse totale de l’avion (tonnes). Plus il est lourd, plus il faut de portance — donc de vitesse — pour le soulever." data-tip-en="Total aircraft mass (tonnes). The heavier it is, the more lift — hence speed — is needed to raise it.">
+          <label><span data-fr="Masse" data-en="Mass">Masse</span><span class="val" id="v-mass">70 t</span></label>
+          <input type="range" id="s-mass" min="20" max="200" step="5" value="70" />
+        </div>
+        <div class="ctrl" data-tip-fr="Surface des ailes (m²). De grandes ailes génèrent plus de portance à vitesse égale : l’avion décolle plus tôt." data-tip-en="Wing area (m²). Larger wings make more lift at the same speed: the plane lifts off sooner.">
+          <label><span data-fr="Surface des ailes S" data-en="Wing area S">Surface des ailes S</span><span class="val" id="v-wing">120 m²</span></label>
+          <input type="range" id="s-wing" min="40" max="360" step="10" value="120" />
+        </div>
+        <div class="ctrl" data-tip-fr="Poussée des moteurs (kN). Elle accélère l’avion sur la piste : plus elle est forte, plus la vitesse de décollage est atteinte vite (piste plus courte)." data-tip-en="Engine thrust (kN). It accelerates the plane on the runway: more thrust reaches takeoff speed sooner (shorter runway).">
+          <label><span data-fr="Poussée moteurs" data-en="Engine thrust">Poussée moteurs</span><span class="val" id="v-thrust">220 kN</span></label>
+          <input type="range" id="s-thrust" min="60" max="600" step="10" value="220" />
+        </div>
+        <div class="ctrl" data-tip-fr="Angle des volets / cabré, qui fixe le coefficient de portance C_L. Plus il est grand, plus l’aile « accroche » l’air — mais au-delà, elle décroche." data-tip-en="Flap / pitch angle, setting the lift coefficient C_L. Larger means the wing grips the air more — but beyond a point, it stalls.">
+          <label><span data-fr="Coefficient de portance C_L" data-en="Lift coefficient C_L">Coefficient de portance C_L</span><span class="val" id="v-cl">1.40</span></label>
+          <input type="range" id="s-cl" min="0.6" max="2.2" step="0.05" value="1.4" />
+        </div>
+      </div>
+
+      <div class="block">
+        <h3><span class="ic">∑</span><span data-fr="Tableau de bord" data-en="Dashboard">Tableau de bord</span></h3>
+        <div class="kv">
+          <span class="k" data-fr="Vitesse de décollage V_R" data-en="Takeoff speed V_R">Vitesse de décollage V_R</span><span class="v hot" id="k-vr">—</span>
+          <span class="k" data-fr="Vitesse actuelle" data-en="Current speed">Vitesse actuelle</span><span class="v" id="k-v">0</span>
+          <span class="k" data-fr="Distance parcourue" data-en="Distance covered">Distance parcourue</span><span class="v" id="k-dist">0 m</span>
+          <span class="k" data-fr="Portance ⁄ poids" data-en="Lift ⁄ weight">Portance ⁄ poids</span><span class="v" id="k-ratio">0%</span>
+        </div>
+      </div>
+
+      <div class="block lesson">
+        <h3><span class="ic">𝑓</span><span data-fr="La notion" data-en="The idea">La notion</span></h3>
+        <div class="step">
+          <span class="lab" data-fr="Intuition" data-en="Intuition">Intuition</span>
+          <div class="body" data-fr="Pour décoller, l’avion doit créer une force vers le haut — la <strong>portance</strong> — au moins égale à son <strong>poids</strong>. Cette portance naît de la vitesse de l’air sur les ailes : pas de vitesse, pas d’envol." data-en="To take off, the plane must create an upward force — <strong>lift</strong> — at least equal to its <strong>weight</strong>. Lift comes from the air speed over the wings: no speed, no flight." data-html="1"></div>
+        </div>
+        <div class="step">
+          <span class="lab" data-fr="Formule" data-en="Formula">Formule</span>
+          <div class="body" data-fr="La portance grandit comme le <strong>carré</strong> de la vitesse :" data-en="Lift grows like the <strong>square</strong> of the speed:" data-html="1"></div>
+          <div class="fbox">L = ½ · ρ · <span class="hot">v²</span> · S · C_L</div>
+        </div>
+        <div class="step">
+          <span class="lab" data-fr="Détail" data-en="Detail">Détail</span>
+          <div class="body" data-fr="L’avion quitte le sol quand L = m·g. On en déduit la <strong>vitesse de rotation</strong> V_R. Sur la piste, la poussée F moins la traînée donne l’accélération a = (F − ½ρv²S·C_D)⁄m, qui détermine la longueur de piste nécessaire." data-en="The plane leaves the ground when L = m·g. From this we get the <strong>rotation speed</strong> V_R. On the runway, thrust F minus drag gives the acceleration a = (F − ½ρv²S·C_D)⁄m, which sets the required runway length." data-html="1"></div>
+          <div class="fbox"><span class="hot">V_R</span> = √( 2·m·g ⁄ (ρ·S·C_L) )</div>
+        </div>
+        <p class="tip" data-fr="<b>Essaie :</b> alourdis l’avion → V_R monte et la piste s’allonge. Augmente la surface d’aile ou C_L (volets) → il décolle plus lentement. Baisse la poussée → la piste devient (trop ?) longue." data-en="<b>Try it:</b> add mass → V_R rises and the runway lengthens. Increase wing area or C_L (flaps) → it lifts off slower. Lower thrust → the runway gets (too?) long." data-html="1"></p>
+      </div>
+    </aside>
+  </main>
+
+  <section class="feedback-wrap" id="feedback"></section>
+
+  <script src="../../assets/config.js"></script>
+  <script src="../../assets/common.js"></script>
+  <script src="../../assets/simkit.js"></script>
+  <script src="sim.js"></script>
+  <script src="../../assets/feedback.js"></script>
+</body>
+</html>

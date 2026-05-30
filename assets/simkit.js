@@ -15,10 +15,7 @@
     root.querySelectorAll("[data-tip-fr]").forEach(host => {
       if (host.dataset.tipDone) return;
       host.dataset.tipDone = "1";
-      let anchor = host.classList.contains("ctrl")
-        ? (host.querySelector("label > span") || host.querySelector("label"))
-        : host;
-      if (!anchor) return;
+
       const ic = el("span", "info-ic", "i");
       ic.setAttribute("role", "button"); ic.setAttribute("tabindex", "0");
       ic.setAttribute("aria-label", t("Aide", "Help"));
@@ -32,7 +29,26 @@
         document.querySelectorAll(".info-ic.open").forEach(i => i.classList.remove("open"));
         if (!open) ic.classList.add("open");
       });
-      anchor.appendChild(ic);
+
+      // Trouve le texte d'étiquette traduit (data-fr) à côté duquel poser l'icône.
+      let labelText = null;
+      if (host.classList.contains("ctrl")) labelText = host.querySelector("label > span");
+      else {
+        // toggle-row, etc. : 1er enfant <span> traduit
+        const first = host.firstElementChild;
+        if (first && first.tagName === "SPAN" && first.hasAttribute("data-fr")) labelText = first;
+      }
+
+      if (labelText) {
+        // emballe [texte][icône] pour survivre aux réécritures de applyLang
+        const wrap = el("span", "label-tip");
+        labelText.parentNode.insertBefore(wrap, labelText);
+        wrap.appendChild(labelText);
+        wrap.appendChild(ic);
+      } else {
+        // .seg ou conteneur non traduit : on pose l'icône directement
+        host.appendChild(ic);
+      }
     });
   }
   document.addEventListener("click", () => document.querySelectorAll(".info-ic.open").forEach(i => i.classList.remove("open")));

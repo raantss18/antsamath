@@ -157,4 +157,13 @@ footer { padding: 48px clamp(16px, 5vw, 64px) 56px; border-top: 1px dashed var(-
 
 @media (max-width: 680px) {
   .nav-links a.txtlink { display: none; }
+  .nav { gap: 10px; padding: 12px 16px; }
+  .brand { font-size: 18px; }
+  .nav-links { gap: 5px; }
+  .grid { grid-template-columns: 1fr; gap: 16px; }
+  .feedback-wrap { grid-template-columns: 1fr; }
+}
+@media (max-width: 420px) {
+  .langbtn, .themebtn, .gh { height: 34px; }
+  .themebtn, .gh { width: 34px; }
 }

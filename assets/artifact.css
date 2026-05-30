@@ -107,6 +107,7 @@ input[type="range"]::-moz-range-thumb { width: 16px; height: 16px; border-radius
 .simctrl .ctrl { margin-bottom: 0; }
 
 /* ---------- info-bulles ⓘ ---------- */
+.label-tip { display: inline-flex; align-items: center; min-width: 0; }
 .info-ic {
   display: inline-grid; place-items: center; width: 15px; height: 15px;
   border-radius: 50%; border: 1.3px solid var(--ink-soft); color: var(--ink-soft);
@@ -137,6 +138,30 @@ input[type="range"]::-moz-range-thumb { width: 16px; height: 16px; border-radius
 .lesson .step .body { font-size: 14px; line-height: 1.6; color: var(--ink-soft); }
 .lesson .step .body strong { color: var(--ink); font-weight: 600; }
 .lesson .step .fbox { grid-column: 1 / -1; margin: 10px 0 0; }
+
+/* ---------- MOBILE ---------- */
+@media (max-width: 900px) {
+  .art-main { grid-template-columns: 1fr; gap: 16px; }
+  .stage-wrap { position: static; }
+  .stage { aspect-ratio: 1 / 1; max-height: 64vh; }
+}
+@media (max-width: 600px) {
+  .art-nav { gap: 10px; padding: 10px 14px; flex-wrap: wrap; }
+  .back { font-size: 12px; padding: 8px 12px; }
+  .art-head { order: 3; flex-basis: 100%; }
+  .art-head h1 { font-size: 19px; }
+  .art-tools { margin-left: auto; }
+  .art-main { padding: 14px 14px 70px; }
+  .stage { aspect-ratio: 4 / 3; max-height: 58vh; }
+  .readouts .pill { font-size: 11px; padding: 4px 8px; }
+  .legend { font-size: 10.5px; gap: 7px; }
+  .block { padding: 16px 15px 17px; }
+  .simctrl .transport .mini { min-width: 0; flex: 1 1 28%; padding: 11px 8px; font-size: 12.5px; }
+  .info-pop { max-width: 70vw; }
+  .seg button { padding: 10px 13px; }
+  input[type="range"]::-webkit-slider-thumb { width: 22px; height: 22px; }
+  input[type="range"]::-moz-range-thumb { width: 20px; height: 20px; }
+}
 
 /* ---------- NOTATION + FORUM (feedback partagé) ---------- */
 .feedback-wrap { max-width: 1320px; margin: 0 auto; padding: 4px clamp(14px, 4vw, 40px) 72px; display: grid; grid-template-columns: 340px 1fr; gap: 22px; align-items: start; }
