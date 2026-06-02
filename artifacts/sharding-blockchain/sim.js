@@ -79,9 +79,10 @@
     L.innerHTML = '<span><i style="background:' + css("--accent") + '"></i>' + u("tx interne", "intra-shard tx") + '</span><span><i style="background:' + CROSSCOL + '"></i>' + u("tx inter-shards", "cross-shard tx") + '</span>';
   }
 
+  let sim;
   function bind(id, valId, key, fmt, doReset) {
     const s = document.getElementById(id), v = document.getElementById(valId);
-    const upd = () => { P[key] = parseInt(s.value, 10); v.textContent = fmt(P[key]); updateReadouts(); if (doReset) sim.reset(); };
+    const upd = () => { P[key] = parseInt(s.value, 10); v.textContent = fmt(P[key]); updateReadouts(); if (doReset) { if (sim) sim.reset(); else reset(); } };
     s.addEventListener("input", upd); upd();
   }
   bind("s-k", "v-k", "K", x => x, true);
@@ -97,7 +98,7 @@
   fit();
 
   let fr = 0;
-  const sim = SimKit.mount({
+  sim = SimKit.mount({
     el: "#sim-controls", continuous: true, stepDt: 0.1,
     speed: { min: 0.2, max: 3, step: 0.1, value: 1 },
     onStep: (dt) => { stepSim(dt); if ((fr++ & 3) === 0) updateReadouts(); },

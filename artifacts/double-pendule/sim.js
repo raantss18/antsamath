@@ -8,7 +8,7 @@
   const TAU = Math.PI * 2, D2R = Math.PI / 180;
 
   const P = { L1: 1, L2: 1, m1: 1, m2: 1, g: 9.8, damp: 0, t1: 120, t2: 150, twin: false };
-  let main = null, ghost = null, trail = [], gtrail = [];
+  let main = null, ghost = null, trail = [], gtrail = [], sim;
 
   function freshState() { return { a1: P.t1 * D2R, a2: P.t2 * D2R, w1: 0, w2: 0 }; }
   function reset() {
@@ -113,7 +113,7 @@
   bind("s-g", "v-g", "g", x => x.toFixed(1)); bind("s-damp", "v-damp", "damp", x => Math.round(x) + "%");
   function bindAngle(id, valId, key) {
     const s = document.getElementById(id), v = document.getElementById(valId);
-    const upd = () => { P[key] = parseFloat(s.value); v.textContent = Math.round(P[key]) + "°"; sim.reset(); };
+    const upd = () => { P[key] = parseFloat(s.value); v.textContent = Math.round(P[key]) + "°"; if (sim) sim.reset(); else reset(); };
     s.addEventListener("input", upd); upd();
   }
   bindAngle("s-t1", "v-t1", "t1"); bindAngle("s-t2", "v-t2", "t2");
@@ -126,7 +126,7 @@
   fit();
 
   /* ---------- SimKit ---------- */
-  const sim = SimKit.mount({
+  sim = SimKit.mount({
     el: "#sim-controls", continuous: true, stepDt: 1 / 40,
     speed: { min: 0.1, max: 2, step: 0.1, value: 0.4 },
     onStep: (dt) => { advance(dt); updatePills(); },

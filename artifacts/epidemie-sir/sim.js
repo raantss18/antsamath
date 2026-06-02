@@ -115,10 +115,11 @@
     document.getElementById("r-tot").textContent = Math.round(everInf / P.N * 100) + " %";
   }
 
+  let sim;
   /* ---------- contrôles ---------- */
   function bind(id, valId, key, fmt, doReset) {
     const s = document.getElementById(id), v = document.getElementById(valId);
-    const upd = () => { P[key] = parseFloat(s.value); v.textContent = fmt(P[key]); updateReadouts(); if (doReset) sim.reset(); };
+    const upd = () => { P[key] = parseFloat(s.value); v.textContent = fmt(P[key]); updateReadouts(); if (doReset) { if (sim) sim.reset(); else reset(); } };
     s.addEventListener("input", upd); upd();
   }
   bind("s-n", "v-n", "N", x => Math.round(x), true);
@@ -135,7 +136,7 @@
 
   /* ---------- SimKit (1 seconde simulée = 1 jour) ---------- */
   let frame = 0;
-  const sim = SimKit.mount({
+  sim = SimKit.mount({
     el: "#sim-controls", continuous: true, stepDt: 0.5,
     speed: { min: 0.2, max: 4, step: 0.2, value: 1 },
     onStep: (dt) => { advance(dt, sim ? sim.simTime : 0); if ((frame++ & 1) === 0) updateReadouts(); },

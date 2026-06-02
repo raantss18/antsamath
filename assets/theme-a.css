@@ -11,9 +11,9 @@
   --thumb-base: #FFFFFF;
   --accent: #FF6B3D;
   --shadow: rgba(40, 28, 14, .14);
-  --display: "Bricolage Grotesque", system-ui, sans-serif;
-  --body: "Lexend", system-ui, sans-serif;
-  --mono: "Space Mono", ui-monospace, monospace;
+  --display: "Bricolage Grotesque", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --body: "Lexend", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --mono: "Space Mono", "Cascadia Code", "Menlo", "Consolas", ui-monospace, monospace;
   --r: 22px;
 }
 html[data-theme="dark"] {
@@ -162,8 +162,24 @@ footer { padding: 48px clamp(16px, 5vw, 64px) 56px; border-top: 1px dashed var(-
   .nav-links { gap: 5px; }
   .grid { grid-template-columns: 1fr; gap: 16px; }
   .feedback-wrap { grid-template-columns: 1fr; }
+  /* touch targets minimum 44px */
+  .langbtn, .themebtn, .gh { min-height: 44px; }
+  .chip { min-height: 44px; padding: 11px 16px; }
+  .btn { padding: 14px 22px; font-size: 15px; }
+  .cta-row { gap: 12px; }
+  footer { padding: 36px 16px 48px; }
+}
+@media (max-width: 480px) {
+  .hero h1 { font-size: clamp(32px, 9vw, 52px); }
+  .hero p.lede { font-size: 15px; }
+  main { padding: clamp(28px, 5vw, 48px) 14px 16px; }
+  .sec-head h2 { font-size: clamp(20px, 6vw, 30px); }
+  /* grille à 2 colonnes sur téléphone large, 1 colonne sur petit */
+  .grid { grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 1fr)); }
 }
 @media (max-width: 420px) {
-  .langbtn, .themebtn, .gh { height: 34px; }
-  .themebtn, .gh { width: 34px; }
+  .langbtn, .themebtn, .gh { height: 40px; }
+  .themebtn, .gh { width: 40px; }
+  .nav { padding: 10px 14px; }
+  .brand { font-size: 17px; }
 }
